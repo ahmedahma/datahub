@@ -14,7 +14,7 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   datahub-gms:
-    env_file: ../datahub-gms/env/dev.postgres.env
+    env_file: ../datahub-gms/env/docker.env
     depends_on:
       - postgres
 

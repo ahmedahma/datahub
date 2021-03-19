@@ -31,7 +31,7 @@ DataHub Docker Images:
 Dependencies:
 * [Kafka, Zookeeper, and Schema Registry](kafka-setup)
 * [Elasticsearch](elasticsearch-setup)
-* [MySQL](mysql)
+* [Postgres](postgres)
 * [Neo4j](neo4j)
 
 ### Ingesting demo data.
