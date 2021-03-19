@@ -140,7 +140,7 @@ services:
     depends_on:
       - elasticsearch-setup
       - kafka-setup
-      - mysql
+      - postgres
       - neo4j
 
   datahub-frontend:
