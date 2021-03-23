@@ -1,0 +1,11 @@
+source:
+  type: postgres
+  config:
+    username: datahub
+    password: datahub
+    host_port: postgres:5432
+
+sink:
+  type: "datahub-rest"
+  config:
+    server: 'http://datahub-gms:8080'
