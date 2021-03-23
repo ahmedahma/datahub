@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-
-from src.usecase.orchestrate_pipeline import construct_temporal_trace_refined_table_from_rousset_fdc_data
+from sample_pipeline.usecase.orchestrate_pipeline import construct_temporal_trace_refined_table_from_rousset_fdc_data
 
 app = FastAPI()
 

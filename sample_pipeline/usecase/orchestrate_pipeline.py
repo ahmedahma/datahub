@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.domain.transformation_pipeline import build_normalized_mes_context_table_from_mes_context
-from src.infra.load_tables import load_table_from_dump_name
+from sample_pipeline.domain.transformation_pipeline import build_normalized_mes_context_table_from_mes_context
+from sample_pipeline.infra.load_tables import load_table_from_dump_name
 
 
 def construct_temporal_trace_refined_table_from_rousset_fdc_data():
