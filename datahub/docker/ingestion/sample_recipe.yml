@@ -1,7 +1,9 @@
 source:
-  type: "file"
+  type: postgres
   config:
-    filename: "/bootstrap_mce.json"
+    username: datahub
+    password: datahub
+    host_port: postgres:5432
 
 sink:
   type: "datahub-rest"
