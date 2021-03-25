@@ -29,6 +29,11 @@
             "actor": "urn:li:corpuser:fbar"
           },
           "hash": "",
+          "platformSchema": {
+            "com.linkedin.schema.KafkaSchema": {
+              "documentSchema": "{}"
+            }
+          }b,
           "fields": [
             {
               "fieldPath": "foo",
