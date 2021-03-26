@@ -1,0 +1,7 @@
+README.md
+setup.py
+tdf_innovation.egg-info/PKG-INFO
+tdf_innovation.egg-info/SOURCES.txt
+tdf_innovation.egg-info/dependency_links.txt
+tdf_innovation.egg-info/requires.txt
+tdf_innovation.egg-info/top_level.txt
