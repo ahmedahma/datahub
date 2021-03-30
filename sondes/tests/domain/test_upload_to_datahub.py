@@ -2,6 +2,7 @@ from unittest.mock import patch, MagicMock
 
 from src.domain.browse_datasets import browse_datasets
 from src.domain.create_dataset import create_dataset
+from src.domain.upsert_dataset_column import get_dataset_schema
 
 
 @patch('src.domain.browse_datasets.requests.post')
@@ -39,7 +40,7 @@ def test_browse_datasets_returns_correct_list_of_datasets(request_post):
 
 
 @patch('src.domain.create_dataset.requests.post')
-def test_create_dataset_column_returns_correct_informations_to_upload_in_datahub(request_post):
+def test_create_new_dataset_column_returns_correct_informations_to_upload_in_datahub(request_post):
     # Given
     user_name = 'toto'
     dataset_name = 'dataset_test'
@@ -72,7 +73,7 @@ def test_create_dataset_column_returns_correct_informations_to_upload_in_datahub
     request_post.return_value = response_return_value
 
     # When
-    actual_json = create_dataset(user_name, dataset_name, file_name)
+    actual_json = get_dataset_schema()
 
     # Then
     assert actual_json == expected_json

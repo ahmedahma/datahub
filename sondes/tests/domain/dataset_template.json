@@ -33,7 +33,7 @@
             "com.linkedin.schema.KafkaSchema": {
               "documentSchema": "{}"
             }
-          }b,
+          },
           "fields": [
             {
               "fieldPath": "foo",

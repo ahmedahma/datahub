@@ -1,37 +1,40 @@
-import requests
-from src.domain.datahub_exception import DatahubException
+from typing import Dict
 
 
-def create_dataset(user_name: str, dataset_name: str, file_name: str):
-    api_url = f"http://localhost:8080/datasets?action=ingest"
-    json = {
-        "snapshot": {
-            "aspects": [
-                {
-                    "com.linkedin.common.Ownership": {
-                        "owners": [
-                            {
-                                "owner": f"urn:li:corpuser:{user_name}",
-                                "type": "DATAOWNER"
-                            }
-                        ],
-                        "lastModified": {
-                            "time": 0,
-                            "actor": f"urn:li:corpuser:{user_name}"
+def create_dataset(user_model: Dict) -> Dict:
+    first_name, last_name, department_id = user_model.keys()
+
+    user_json = {
+        "auditHeader": None,
+        "proposedSnapshot": {
+            "com.linkedin.pegasus2avro.metadata.snapshot.CorpUserSnapshot": {
+                "urn": "urn:li:corpuser:jcvd",
+                "aspects": [
+                    {
+                        "com.linkedin.pegasus2avro.identity.CorpUserInfo": {
+                            "active": True,
+                            "displayName": {
+                                "string": user_model['first_name'] + ' ' + user_model['last_name']
+                            },
+                            "email": "jcvd@jcvd.jcvd",
+                            "title": {
+                                "string": "who knows?"
+                            },
+                            "managerUrn": None,
+                            "departmentId": user_model['departmentId'],
+                            "departmentName": "Exploration Production",
+                            "firstName": user_model['first_name'],
+                            "lastName": user_model['last_name'],
+                            "fullName": {
+                                "string": user_model['first_name'] + ' ' + user_model['last_name']
+                            },
+                            "countryCode": "BE"
                         }
                     }
-                }
-            ],
-            "urn": f"urn:li:dataset:(urn:li:dataPlatform:{dataset_name},{file_name},PROD)"
-        }
+                ]
+            }
+        },
+        "proposedDelta": None
     }
 
-    try:
-        api_response = requests.post(api_url, json=json)
-    except Exception:
-        raise DatahubException(f'Error connecting Datahub API ')
-
-    if api_response.status_code != 200:
-        raise DatahubException(f'Error getting API Datahub DATA ')
-
-    return api_response.json()
+    return user_json
