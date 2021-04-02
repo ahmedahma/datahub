@@ -8,11 +8,14 @@ services:
     image: linkedin/datahub-ingestion:${DATAHUB_VERSION:-latest}
     hostname: ingestion
     container_name: ingestion
-    command: "ingest -c /sample_recipe.yml"
+    command: "ingest -c /test_recipe.yml"
     volumes: 
       # Most of the config is embedded inside the sample recipe file.
       - ./sample_recipe.yml:/sample_recipe.yml:ro
       - ./bootstrap_mce.json:/bootstrap_mce.json:ro
+      - ./test_user_mce.json:/test_user_mce.json:ro
+      - ./test_dataset_mce.json:/test_dataset_mce.json:ro
+      - ./test_recipe.yml:/test_recipe.yml:ro
 
 networks:
   default:

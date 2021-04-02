@@ -31,7 +31,7 @@
           "hash": "",
           "platformSchema": {
             "com.linkedin.schema.KafkaSchema": {
-              "documentSchema": "{}"
+              "documentSchema": "{\"type\":\"record\",\"name\":\"MetadataChangeEvent\",\"namespace\":\"com.linkedin.mxe\",\"doc\":\"Kafka event for proposing a metadata change for an entity.\",\"fields\":[{\"name\":\"auditHeader\",\"type\":{\"type\":\"record\",\"name\":\"KafkaAuditHeader\",\"namespace\":\"com.linkedin.avro2pegasus.events\",\"doc\":\"Header\"}}]}"
             }
           },
           "fields": [

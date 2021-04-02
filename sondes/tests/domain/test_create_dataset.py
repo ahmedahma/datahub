@@ -6,27 +6,38 @@ from src.domain.create_dataset import create_dataset
 
 
 @pytest.fixture
-def user_mce():
+def dataset_mce():
     pathname = os.path.dirname(os.path.abspath(__file__))
-    filename = 'user_mce_fixture.json'
-    user_mce_pathname = os.path.join(pathname, filename)
-    with open(user_mce_pathname) as json_file:
-        user_mce_object = json.load(json_file)
-    return user_mce_object
+    filename = 'dataset_mce_fixture.json'
+    dataset_mce_pathname = os.path.join(pathname, filename)
+    with open(dataset_mce_pathname) as json_file:
+        dataset_mce_object = json.load(json_file)
+    return dataset_mce_object
 
 
-def test_create_user(user_mce):
+def test_create_dataset(dataset_mce):
     # Given
-    user_model = {
-        'first_name': 'Jean Claude',
-        'last_name': 'Van Damme',
-        'departmentId': 'EP'
+    dataset_model = {
+        'dataplatform_name': 'dataplatform',
+        'dataset_name': 'dataset',
+        'fields': [
+            {
+                'name': 'field1',
+                'type': 'string',
+                'description': 'first field'
+            },
+            {
+                'name': 'field2',
+                'type': 'boolean',
+                'description': 'second field'
+            }
+        ]
     }
 
-    expected_mce = user_mce
+    expected_mce = dataset_mce
 
     # When
-    actual_user_mce_json = create_dataset(user_model)
+    actual_dataset_mce_json = create_dataset(dataset_model)
 
     # Then
-    assert actual_user_mce_json == expected_mce
+    assert actual_dataset_mce_json == expected_mce

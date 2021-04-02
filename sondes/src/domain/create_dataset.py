@@ -1,34 +1,33 @@
-from typing import Dict
+from typing import Dict, List
 
 
-def create_dataset(user_model: Dict) -> Dict:
-    first_name, last_name, department_id = user_model.keys()
-
-    user_json = {
+def create_dataset(dataset_model: Dict) -> Dict:
+    dataset_json = {
         "auditHeader": None,
         "proposedSnapshot": {
-            "com.linkedin.pegasus2avro.metadata.snapshot.CorpUserSnapshot": {
-                "urn": "urn:li:corpuser:jcvd",
+            "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
+                "urn": f"urn:li:dataset:(urn:li:dataPlatform:{dataset_model['dataplatform_name']},"
+                f"{dataset_model['dataset_name']},PROD)",
                 "aspects": [
                     {
-                        "com.linkedin.pegasus2avro.identity.CorpUserInfo": {
-                            "active": True,
-                            "displayName": {
-                                "string": user_model['first_name'] + ' ' + user_model['last_name']
+                        "com.linkedin.pegasus2avro.schema.SchemaMetadata": {
+                            "schemaName": f"{dataset_model['dataset_name']}",
+                            "platform": f"urn:li:dataPlatform:{dataset_model['dataplatform_name']}",
+                            "version": 0,
+                            "created": {
+                                "time": 1581407189000,
+                                "actor": ""
                             },
-                            "email": "jcvd@jcvd.jcvd",
-                            "title": {
-                                "string": "who knows?"
+                            "lastModified": {
+                                "time": 1581407189000,
+                                "actor": ""
                             },
-                            "managerUrn": None,
-                            "departmentId": user_model['departmentId'],
-                            "departmentName": "Exploration Production",
-                            "firstName": user_model['first_name'],
-                            "lastName": user_model['last_name'],
-                            "fullName": {
-                                "string": user_model['first_name'] + ' ' + user_model['last_name']
-                            },
-                            "countryCode": "BE"
+                            "hash": "",
+                            "platformSchema": {
+                                "com.linkedin.pegasus2avro.schema.KafkaSchema": {
+                                    "documentSchema": ""
+                                }
+                            }
                         }
                     }
                 ]
@@ -37,4 +36,27 @@ def create_dataset(user_model: Dict) -> Dict:
         "proposedDelta": None
     }
 
-    return user_json
+    dataset_json['proposedSnapshot']['com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot']['aspects'][0][
+        'com.linkedin.pegasus2avro.schema.SchemaMetadata']['fields'] = _format_dataset_fields_list(dataset_model['fields'])
+
+    return dataset_json
+
+
+def _format_dataset_fields_list(dataset_fields: List) -> List:
+    dataset_fields_list = []
+    for field in dataset_fields:
+        field_dict = {
+            "fieldPath": field['name'],
+            "description": {
+                "string": field['description']
+            },
+            "type": {
+                "type": {
+                    "com.linkedin.pegasus2avro.schema.BooleanType": {}
+                }
+            },
+            "nativeDataType": field['type']
+        }
+        dataset_fields_list.append(field_dict)
+
+    return dataset_fields_list
