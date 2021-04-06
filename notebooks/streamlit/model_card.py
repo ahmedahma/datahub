@@ -6,6 +6,7 @@ import plotly.express as px
 import joblib
 import matplotlib.pyplot as plt
 import altair as alt
+import numpy as np
 
 from shapash.explainer.smart_explainer import SmartExplainer
 from mlxtend.plotting import plot_confusion_matrix
@@ -78,11 +79,12 @@ def interpret_cohort(dataset_x_test_cohort, model, dataset_y_pred):
 
 st.title('Classifier model card')
 st.write('Le classifieur présenté dans cette carte d\'identité de modèle est utilisé pour dédupliquer des individus ' +
-         'dans un annuaire. Ce classifieur se base sur le calcul de 4 scores de proximité, chacun calculé ' +
-         'différement, + sur 4 colonnes différentes : Nom, Prénom, Adresse et n° de sécurité sociale.')
+     'dans un annuaire. Ce classifieur se base sur le calcul de 4 scores de proximité, chacun calculé ' +
+     'différement, + sur 4 colonnes différentes : Nom, Prénom, Adresse et n° de sécurité sociale.')
 st.write('Sur cette page, vous pourrez voir comment le classifieur performe sur différentes cohortes de données, ' +
-         'notamment celles sur lesquelles il fait des erreurs de prédictions.' + '\n' +
-         'La dernière partie de l\'outil est dédiée au diagnostic manuel de ces erreurs.')
+     'notamment celles sur lesquelles il fait des erreurs de prédictions.' + '\n' +
+     'La dernière partie de l\'outil est dédiée au diagnostic manuel de ces erreurs.')
+
 st.subheader('General metrics')
 st.write('Global confusion matrix', cm)
 
@@ -90,14 +92,32 @@ st.write('Global ROC')
 roc_fig = plt.figure()
 fp_rate, tp_rate, _ = roc_curve(results['label'], results['predictions'])
 
-fig, ax = plt.subplots(num=1, clear=True)
-ax.scatter(fp_rate, tp_rate)
-plt.show()
-st.pyplot(fig)
+fp_tp_rates_df = pd.DataFrame([fp_rate.tolist(), tp_rate.tolist()]).T
+fp_tp_rates_df.columns = ['fp_rate', 'tp_rate']
+
+#fig, ax = plt.subplots(num=1, clear=True)
+scatter = alt.Chart(fp_tp_rates_df).mark_circle(size=80).encode(
+    x=alt.X('fp_rate', scale=alt.Scale(domain=(-0.05, 1))),
+    y='tp_rate',
+    color=alt.value("#FFAA00")
+).properties(
+    width=750,
+    height=500
+).configure_axis(
+        grid=False
+).configure_view(
+    strokeWidth=0
+)
+
+st.altair_chart(scatter)
+#ax.scatter(fp_rate, tp_rate)
+#plt.show()
+#st.pyplot(fig)
 
 
 st.write('Quantité équivalente de carbone émis suite à l\'entraînement de l\'algorithme')
-st.markdown('[Access to Carbon Board](http://localhost:8050)')
+st.markdown('[Access to Carbon Board](http://localhost:8060)')
+
 
 carbon_emissions_emissions = carbon_emissions.copy()
 carbon_emissions_emissions['emissions'] = carbon_emissions['emissions']*1000000
@@ -105,11 +125,14 @@ carbon_emissions_emissions['range'] = list(range(1, len(carbon_emissions)+1))
 
 line_chart = alt.Chart(carbon_emissions_emissions).mark_line(interpolate='basis').encode(
     alt.X('range', title='Nombre de ré entrainement du model'),
-    alt.Y('emissions', title='CO2eq en kg (x10^6)')
+    alt.Y('emissions', title='CO2eq en kg (x10^6)'),
+    color=alt.value('#0000FF')
 ).properties(
     title = 'Quantité équivalente de carbone émis suite à l\'entraînement de l\'algorithme',
     width=750,
     height=500
+).configure_view(
+    strokeWidth=0
 )
 st.altair_chart(line_chart)
 
@@ -121,11 +144,15 @@ carbon_emissions_energy['range'] = list(range(1, len(carbon_emissions)+1))
 
 line_chart = alt.Chart(carbon_emissions_energy).mark_line(interpolate='basis').encode(
     alt.X('range', title='Nombre de ré entrainement du model'),
-    alt.Y('energie_consommee', title='Energie utilisée en kWh (x10^6)')
+    alt.Y('energie_consommee', title='Energie utilisée en kWh (x10^6)'),
+    color = alt.value('#0000FF')
+
 ).properties(
     title='Quantité d\'énergie utilisée de carbone émis suite à l\'entraînement de l\'algorithme',
     width=750,
     height=500
+).configure_view(
+    strokeWidth=0
 )
 st.altair_chart(line_chart)
 
@@ -135,29 +162,61 @@ chosen_count = st.sidebar.selectbox(
     categories_count
 )
 df = cohorts[chosen_count]
-cohort_explainer = interpret_cohort(df[x_columns], classifier, df['label'])
 recall, precision, accuracy = evaluation(df['label'], df['predictions'])
-FI = cohort_explainer.contributions
 
 st.subheader("Cohorte sélectionnée : " + chosen_count)
 
 feature_importance = pd.DataFrame({
-    'Labels': ['a', 'given_name_score', 'address_1_score', 'surname_score'],
+    'Labels': x_columns,
     'FI': [0.058668, 0.112885, 0.381223, 0.447224]
 })
 
-fig3 = px.box(feature_importance, x='FI', y='Labels', notched=True)
-boxplot_chart = st.plotly_chart(fig3)
+bar_chart = alt.Chart(feature_importance).mark_bar().encode(
+    x='FI',
+    y='Labels'
+).properties(
+    title='Features importance',
+    width=750,
+    height=500
+).configure_view(
+    strokeWidth=0
+)
+st.altair_chart(bar_chart)
 
-st.write('Feature importance description')
+st.markdown('[Access to Shapash](http://localhost:8050)')
+st.write('Feature contribution description')
 
-st.line_chart(cohort_explainer.contributions[1][:5])
+FeatureContribution = st.multiselect('De quelle variable voulez-vous afficher la feature contribution ? ', x_columns)
 
+cohort_explainer = interpret_cohort(df[x_columns], classifier, df['label'])
+match = cohort_explainer.contributions[0]
+unmatch = cohort_explainer.contributions[1]
+match['label'] = [0]*len(match)
+unmatch['label'] = [1]*len(match)
+features_importance_with_label = pd.concat([match, unmatch])
+
+if len(FeatureContribution):
+    points = alt.Chart(features_importance_with_label).mark_circle(size=80).encode(
+        x=alt.X('label', axis=alt.Axis(values=[0, 1]), scale=alt.Scale(domain=(-1, 2))),
+        y='soc_sec_id_score',
+        color=alt.value('#0000FF'),
+        tooltip=['label', FeatureContribution[0]],
+    ).properties(
+        title='Features contribution for {}'.format(FeatureContribution[0]),
+        width=750,
+        height=500
+    ).configure_axis(
+        grid=False
+    ).configure_view(
+        strokeWidth=0
+    ).interactive()
+
+    st.altair_chart(points)
 
 GoodExplanation = st.radio('L\'interprétation proposée vous semble correcte ?', ('Oui', 'Non', 'NSPP'))
 IntepretedFeatureImportance = st.radio("L'ordre d'importance des features vous semble-t-il correct ?", ('Oui', 'Non',
                                                                                                         'NSPP'))
-CustomFeatureImportance = st.multiselect('Quel ordre d\'importance pour les features ? ', ['', ''])
+CustomFeatureImportance = st.multiselect('Quel ordre d\'importance pour les features ? ', x_columns)
 IncohrentValue = st.text_input("Quelle est la valeur qui a pu troubler l'algorithme ?", "Oui")
 DataCollectionIssue = st.radio("Y a t il des incohérences qui vous semblent liées à la collecte", ('Oui', 'Non', 'NSPP'))
 
@@ -179,7 +238,7 @@ if st.checkbox('Mode diagnostique :'):
 
 
 
-st.subheader('Performances spécialiste métier')
-st.write('Collaboration Humain-AI : lignes à classifier')
+#st.subheader('Performances spécialiste métier')
+#st.write('Collaboration Humain-AI : lignes à classifier')
 
-st.write(cohorts['False_Negative'])
+#st.write(cohorts['False_Negative'])

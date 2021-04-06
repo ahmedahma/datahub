@@ -1,2 +1,2 @@
-web: sh setup.sh && streamlit run model_card.py && carbonboard data/emissions.csv
+carweb: sh setup.sh && streamlit run model_card.py && carbonboard data/emissions.csv
 
