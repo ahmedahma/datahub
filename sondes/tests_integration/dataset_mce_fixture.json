@@ -1,0 +1,58 @@
+{
+  "auditHeader": null,
+  "proposedSnapshot": {
+    "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:dataplatform,dataset,PROD)",
+      "aspects": [
+        {
+          "com.linkedin.pegasus2avro.schema.SchemaMetadata": {
+            "schemaName": "dataset",
+            "platform": "urn:li:dataPlatform:dataplatform",
+            "version": 0,
+            "created": {
+              "time": 1581407189000,
+              "actor": ""
+            },
+            "lastModified": {
+              "time": 1581407189000,
+              "actor": ""
+            },
+            "hash": "",
+            "platformSchema": {
+              "com.linkedin.pegasus2avro.schema.KafkaSchema": {
+                "documentSchema": ""
+              }
+            },
+            "fields": [
+              {
+                "fieldPath": "field1",
+                "description": {
+                  "string": "first field"
+                },
+                "type": {
+                  "type": {
+                    "com.linkedin.pegasus2avro.schema.BooleanType": {}
+                  }
+                },
+                "nativeDataType": "string"
+              },
+              {
+                "fieldPath": "field2",
+                "description": {
+                  "string": "second field"
+                },
+                "type": {
+                  "type": {
+                    "com.linkedin.pegasus2avro.schema.BooleanType": {}
+                  }
+                },
+                "nativeDataType": "boolean"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "proposedDelta": null
+}
