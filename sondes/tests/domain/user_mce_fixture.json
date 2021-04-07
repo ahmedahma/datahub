@@ -1,0 +1,32 @@
+{
+    "auditHeader": null,
+    "proposedSnapshot": {
+        "com.linkedin.pegasus2avro.metadata.snapshot.CorpUserSnapshot": {
+            "urn": "urn:li:corpuser:jcvd",
+            "aspects": [
+                {
+                    "com.linkedin.pegasus2avro.identity.CorpUserInfo": {
+                        "active": true,
+                        "displayName": {
+                            "string": "Jean Claude Van Damme"
+                        },
+                        "email": "jcvd@jcvd.jcvd",
+                        "title": {
+                            "string": "who knows?"
+                        },
+                        "managerUrn": null,
+                        "departmentId": "EP",
+                        "departmentName": "Exploration Production",
+                        "firstName": "Jean Claude",
+                        "lastName": "Van Damme",
+                        "fullName": {
+                            "string": "Jean Claude Van Damme"
+                        },
+                        "countryCode": "BE"
+                    }
+                }
+            ]
+        }
+    },
+    "proposedDelta": null
+}

@@ -1,0 +1,54 @@
+{
+  "snapshot": {
+    "aspects": [
+      {
+        "com.linkedin.common.Ownership": {
+          "owners": [
+            {
+              "owner": "urn:li:corpuser:fbar",
+              "type": "DATAOWNER"
+            }
+          ],
+          "lastModified": {
+            "time": 0,
+            "actor": "urn:li:corpuser:fbar"
+          }
+        }
+      },
+      {
+        "com.linkedin.schema.SchemaMetadata": {
+          "schemaName": "FooEvent",
+          "platform": "urn:li:dataPlatform:foo",
+          "version": 0,
+          "created": {
+            "time": 0,
+            "actor": "urn:li:corpuser:fbar"
+          },
+          "lastModified": {
+            "time": 0,
+            "actor": "urn:li:corpuser:fbar"
+          },
+          "hash": "",
+          "platformSchema": {
+            "com.linkedin.schema.KafkaSchema": {
+              "documentSchema": "{\"type\":\"record\",\"name\":\"MetadataChangeEvent\",\"namespace\":\"com.linkedin.mxe\",\"doc\":\"Kafka event for proposing a metadata change for an entity.\",\"fields\":[{\"name\":\"auditHeader\",\"type\":{\"type\":\"record\",\"name\":\"KafkaAuditHeader\",\"namespace\":\"com.linkedin.avro2pegasus.events\",\"doc\":\"Header\"}}]}"
+            }
+          },
+          "fields": [
+            {
+              "fieldPath": "foo",
+              "description": "Bar",
+              "nativeDataType": "string",
+              "type": {
+                "type": {
+                  "com.linkedin.schema.StringType": {}
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "urn": "urn:li:dataset:(urn:li:dataPlatform:foo,bar,PROD)"
+  }
+}

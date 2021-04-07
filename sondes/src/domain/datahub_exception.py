@@ -1,0 +1,2 @@
+class DatahubException(Exception):
+    pass
