@@ -31,7 +31,7 @@
                 },
                 "type": {
                   "type": {
-                    "com.linkedin.pegasus2avro.schema.BooleanType": {}
+                    "com.linkedin.pegasus2avro.schema.StringType": {}
                   }
                 },
                 "nativeDataType": "string"

@@ -52,7 +52,7 @@ def _format_dataset_fields_list(dataset_fields: List) -> List:
             },
             "type": {
                 "type": {
-                    "com.linkedin.pegasus2avro.schema.BooleanType": {}
+                    f"com.linkedin.pegasus2avro.schema.{field['pegasus_type']}": {}
                 }
             },
             "nativeDataType": field['type']

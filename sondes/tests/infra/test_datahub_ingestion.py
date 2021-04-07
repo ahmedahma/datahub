@@ -2,43 +2,64 @@ import json
 import os
 
 import pytest
-from src.infra.datahub_ingestion import send_event_to_datahub
+from pydantic.error_wrappers import ValidationError
+from src.infra.datahub_ingestion import _create_pipeline
+
+from datahub.configuration import DynamicTypedConfig
+from datahub.ingestion.run.pipeline import SourceConfig
 
 
 @pytest.fixture
-def dataset_mce():
+def dataset_mce_pathname():
     pathname = os.path.dirname(os.path.abspath(__file__))
     filename = 'dataset_mce_fixture.json'
     dataset_mce_pathname = os.path.join(pathname, filename)
-    with open(dataset_mce_pathname) as json_file:
-        dataset_mce_object = json.load(json_file)
-    return dataset_mce_object
+    return dataset_mce_pathname
 
 
-def test_ingest_data_in_datahub_ingests_dataset_succefully_given_correct_dataset_mce(dataset_mce, capsys):
+def test_create_pipeline_creates_pipeline_given_correct_configuration(dataset_mce_pathname):
     # Given
-    dataset_mce_json = dataset_mce
+    config = {
+        "source": {
+            "type": "file",
+            "config": {
+                "filename": dataset_mce_pathname,
+            },
+        },
+        "sink": {
+            "type": "datahub-rest",
+            "config": {"server": "http://localhost:8080"},
+        },
+    }
+
+    expected_datahub_source_config = SourceConfig(type='file', config={
+        'filename': '/Users/a.alaoui.abdallaoui/tdf_innovation/sondes/tests/infra/dataset_mce_fixture.json'})
+    expected_datahub_sink_config = DynamicTypedConfig(type='datahub-rest', config={'server': 'http://localhost:8080'})
 
     # When
-    send_event_to_datahub(dataset_mce_json)
+    pipeline = _create_pipeline(config)
 
     # Then
-    captured = capsys.readouterr()
 
-    assert 'Pipeline finished successfully' in captured.out
+    actual_datahub_source_config = pipeline.__dict__['config'].source
+    actual_datahub_sink_config = pipeline.__dict__['config'].sink
+
+    assert actual_datahub_source_config == expected_datahub_source_config
+    assert actual_datahub_sink_config == expected_datahub_sink_config
 
 
-def test_ingest_data_in_datahub_fails_when_mce_is_not_in_correct_format(dataset_mce, capsys):
+def test_create_pipeline_raises_error_given_incorrect_configuration(dataset_mce_pathname):
     # Given
-    fake_dataset_mce = {'fake': 'fake'}
+    config = {
+        "sink": {
+            "type": "datahub-rest",
+            "config": {"server": "http://localhost:8080"},
+        }
+    }
 
     # When
-    with pytest.raises(ValueError) as errors:
-        send_event_to_datahub(fake_dataset_mce)
+    with pytest.raises(ValidationError) as errors:
+        _create_pipeline(config)
 
     # Then
-
-    captured = capsys.readouterr()
-
-    assert str(errors.value) == f'failed to parse into valid MCE: {fake_dataset_mce}'
-    assert 'Pipeline finished successfully' not in captured.out
+    assert 'field required', 'validation error' in str(errors.value)

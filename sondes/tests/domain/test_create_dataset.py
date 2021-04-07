@@ -24,11 +24,13 @@ def test_create_dataset(dataset_mce):
             {
                 'name': 'field1',
                 'type': 'string',
+                'pegasus_type': 'StringType',
                 'description': 'first field'
             },
             {
                 'name': 'field2',
                 'type': 'boolean',
+                'pegasus_type': 'BooleanType',
                 'description': 'second field'
             }
         ]
