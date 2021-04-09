@@ -44,7 +44,7 @@ def test_create_pipeline_creates_pipeline_given_correct_configuration(dataset_mc
     }
 
     expected_datahub_source_config = SourceConfig(type='file', config={
-        'filename': '/Users/a.alaoui.abdallaoui/tdf_innovation/sondes/tests/infra/dataset_mce_fixture.json'})
+        'filename': '/Users/amine.saboni/Documents/Total/tdf_innovation/sondes/tests/infra/dataset_mce_fixture.json'})
     expected_datahub_sink_config = DynamicTypedConfig(type='datahub-rest', config={'server': 'http://localhost:8080'})
 
     # When
