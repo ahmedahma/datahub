@@ -6,7 +6,7 @@ def create_model(mlmodel_model):
         "auditHeader": None,
         "proposedSnapshot": {
             "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
-                "urn": f"urn:li:dataset:(urn:li:dataPlatform:machine_learning_demo,{mlmodel_model['dataplatform_name']},PROD)",
+                "urn": f"urn:li:dataset:(urn:li:dataPlatform:machine_learning,{mlmodel_model['dataplatform_name']},PROD)",
                 "aspects": [
                     {
                         "com.linkedin.pegasus2avro.schema.SchemaMetadata": {

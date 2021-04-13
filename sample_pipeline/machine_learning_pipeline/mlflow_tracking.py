@@ -11,9 +11,8 @@ import mlflow.sklearn
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import ElasticNet
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
-from src.usecase.ingest_model import ingest_model
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
@@ -71,33 +70,6 @@ if __name__ == "__main__":
         mlflow.log_metric("rmse", rmse)
         mlflow.log_metric("r2", r2)
         mlflow.log_metric("mae", mae)
-
-        mlmodel_model = {
-            'dataplatform_name': type(lr).__name__,
-            'fields': [
-                {
-                    'name': 'mae_metric',
-                    'description': f"{rmse}"
-                },
-                {
-                    'name': 'r2_metric',
-                    'description': f"{r2}"
-                },
-                {
-                    'name': 'mae_metric',
-                    'description': f"{mae}"
-                },
-                {
-                    'name': 'alpha_param',
-                    'description': f"{alpha}"
-                },
-                {
-                    'name': 'l1_ratio_param',
-                    'description': f"{l1_ratio}"
-                }
-            ]
-        }
-        ingest_model(mlmodel_model)
 
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
 

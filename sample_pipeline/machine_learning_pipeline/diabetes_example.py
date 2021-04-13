@@ -1,16 +1,13 @@
-import numpy as np
-import pandas as pd
-
-from sklearn import datasets
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.model_selection import train_test_split
-from sklearn.dummy import DummyRegressor
-from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import ElasticNet
-
 import mlflow
 import mlflow.sklearn
-from src.usecase.ingest_model import ingest_model
+import numpy as np
+import pandas as pd
+from sklearn import datasets
+from sklearn.dummy import DummyRegressor
+from sklearn.linear_model import ElasticNet
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.model_selection import train_test_split
 
 diabetes = datasets.load_diabetes()
 X = diabetes.data
@@ -48,56 +45,6 @@ def train_diabetes(data, model, tags={}, params={}):
         model.fit(train_x, train_y)
         ypred = model.predict(test_x)
         (rmse, mae, r2) = eval_metrics(test_y, ypred)
-
-
-
-        if not params.keys():
-            mlmodel_model = {
-                'dataplatform_name': tags['model_type'],
-                'fields': [
-                    {
-                        'name': 'mae_metric',
-                        'description': f"{rmse}"
-                    },
-                    {
-                        'name': 'r2_metric',
-                        'description': f"{r2}"
-                    },
-                    {
-                        'name': 'mae_metric',
-                        'description': f"{mae}"
-                    }
-                ]
-            }
-
-            ingest_model(mlmodel_model)
-        else:
-            mlmodel_model_with_params = {
-                'dataplatform_name': tags['model_type'],
-                'fields': [
-                    {
-                        'name': 'mae_metric',
-                        'description': f"{rmse}"
-                    },
-                    {
-                        'name': 'r2_metric',
-                        'description': f"{r2}"
-                    },
-                    {
-                        'name': 'mae_metric',
-                        'description': f"{mae}"
-                    },
-                    {
-                        'name': 'alpha_param',
-                        'description': f"{params['alpha']}"
-                    },
-                    {
-                        'name': 'l1_ratio_param',
-                        'description': f"{params['l1_ratio']}"
-                    }
-                ]
-            }
-            ingest_model(mlmodel_model_with_params)
 
         print("RMSE: %s" % rmse)
         print("MAE: %s" % mae)
