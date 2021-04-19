@@ -25,3 +25,15 @@ dans l' 'infrastrcuture' et le croisement des logiques dans le dossier 'usecase'
 
 Par défaut, les méthodes et variables sont décrites par type hitting.
 Un typage plus fort peut être mis en place sur les APIs.
+
+# 3. Convention de nommage 
+
+### Nommage des branches: 
+Le nom d'une branche doit correspondre à un ticket crée sur Trello correspondant à une ou plusieurs tâches.
+Les branches sont également précedées d'un index.  
+
+
+### Message de commit :
+Les messages lors des commit doivent :
+- être clairs
+- précédés par le type de commit (*giex : fix, feat,...*)

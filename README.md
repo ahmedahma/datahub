@@ -17,3 +17,15 @@ Pour tester une extraction via ces sondes, il suffit de faire appel à la sonde 
 Ensuite, il faudra lancer l'application qui gère la pipeline et faire un GET ou un POST sur la route sur laquelle est exposé le use_case
 
 Finalement, pour visualiser les résultats de l'extraction de ces métadonnées, on peut les retrouver dans l'interface datahub, disponible sur localhost:9002 ( ou localhost:9001 ), en supposant qu'on a déjà déployé Datahub en local.
+
+Le dossier **notebooks** comprennent les notebooks pour tester les outils recordlinkage
+et holoclean en utilisant les données présents dans le dossier **data**.
+
+Dans le dossier **local_deps** on retrouve les dépendances nécessaires pour tester
+les outils, notament les outils shapash et codecarbon.
+
+Le dossier **streamlit** contient tous les élements nécessaires pour 
+lanceer la model_card. Pour afficher la model card, il faut se placer dans le dossier streamlit
+et lancer la commande streamlit run model_card.py. Il est possible de lancer la 
+model card sans se déplacer dans le dossier en lançant la commande
+streamlit run wher_you_are/notebooks/streamlit/model_card.py 

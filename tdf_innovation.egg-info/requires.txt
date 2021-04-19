@@ -1,4 +1,0 @@
-recordlinkage
-mlxtend
-pandas
-numpy

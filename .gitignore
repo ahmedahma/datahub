@@ -1,3 +1,12 @@
 tdf_innovation
 local_deps
 streamlit/.idea
+notebooks/.ipynb_checkpoints
+notebooks/emissions.csv
+notebooks/intel_power_gadget_log.csv
+streamlit/intel_power_gadget_log.csv
+streamlit/emissions.csv
+test_recordlinkage
+../.DS_Store
+../.idea/
+tdf_innovation.egg-info
