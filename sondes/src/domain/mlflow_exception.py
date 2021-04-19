@@ -1,0 +1,2 @@
+class MlflowException(Exception):
+    pass
