@@ -34,6 +34,4 @@ Les branches sont également précedées d'un index.
 
 
 ### Message de commit :
-Les messages lors des commit doivent :
-- être clairs
-- précédés par le type de commit (*giex : fix, feat,...*)
+Les messages lors des commit doivent être clairs et précédés par le type de commit (*ex : fix, feat, refacto,...*)
