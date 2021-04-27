@@ -24,7 +24,7 @@ class DatasetAbstractRepository(abc.ABC):
 
 class DataGalaxyDatasetRepository(DatasetAbstractRepository):
     def __init__(self):
-        self.integration_token = os.environ.get("DATAGALAXY_INTEGRATION_TOKEN", '')
+        self.integration_token = os.environ.get("DATAGALAXY_INTEGRATION_TOKEN")
         self.access_token = _get_access_token(self.integration_token)
 
     def get_by_id(self, dataset_id, version_id):
@@ -36,7 +36,7 @@ class DataGalaxyDatasetRepository(DatasetAbstractRepository):
         except Exception:
             raise DataGalaxyException(f'Error connecting Datagalaxy API ')
         if api_response.status_code != 200:
-            if api_response.status_code == 498:
+            if api_response.status_code == 401:
                 new_access_token = _get_access_token(self.integration_token)
                 headers = {'Authorization': 'Bearer ' + new_access_token}
                 api_response = requests.get(api_url, headers=headers)
@@ -47,7 +47,7 @@ class DataGalaxyDatasetRepository(DatasetAbstractRepository):
 
     def save_dataset(self, version_id, dataset_object):
         api_url = f'https://api.datagalaxy.com/v2/sources/{version_id}'
-        headers = {'Authorization': 'Bearer ' + self.access_token}
+        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token}
         data = {
             "name": dataset_object['name'],
             "status": dataset_object['status'],
@@ -62,14 +62,14 @@ class DataGalaxyDatasetRepository(DatasetAbstractRepository):
         }
 
         try:
-            api_response = requests.post(api_url, data=data, headers=headers)
+            api_response = requests.post(api_url, headers=headers, json=data)
         except Exception:
             raise DataGalaxyException(f'Error connecting Datagalaxy API ')
-        if api_response.status_code != 200:
-            if api_response.status_code == 498:
+        if api_response.status_code != 201:
+            if api_response.status_code == 401:
                 new_access_token = _get_access_token(self.integration_token)
-                headers = {'Authorization': 'Bearer ' + new_access_token}
-                api_response = requests.post(api_url,data=data, headers=headers)
+                headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + new_access_token}
+                api_response = requests.post(api_url, json=data, headers=headers)
             else:
                 raise DataGalaxyException(f'Error posting data in Datagalaxy API ')
 
@@ -97,7 +97,6 @@ class DataGalaxyDatasetRepository(DatasetAbstractRepository):
 def _get_access_token(integration_token):
     api_url = 'https://api.datagalaxy.com/v2/credentials'
     headers = {'Authorization': 'Bearer ' + integration_token}
-
     try:
         api_response = requests.get(api_url, headers=headers)
     except Exception:

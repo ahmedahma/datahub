@@ -76,7 +76,7 @@ class TestGetById:
             "attributes": {}
         }
 
-        response_return_value = MagicMock(status_code=498, text='')
+        response_return_value = MagicMock(status_code=401, text='')
         response_return_value.json = MagicMock(return_value=expected_api_response)
         mocked_request_get.return_value = response_return_value
 
@@ -125,7 +125,7 @@ class TestSaveDataset:
             "location": "folder/test"
         }
 
-        response_return_value = MagicMock(status_code=200, text='')
+        response_return_value = MagicMock(status_code=201, text='')
         response_return_value.json = MagicMock(return_value=expected_api_response)
         request_post.return_value = response_return_value
 
@@ -134,8 +134,9 @@ class TestSaveDataset:
 
         # Then
         request_post.assert_called_once_with(f'https://api.datagalaxy.com/v2/sources/{version_id}',
-                                             headers={'Authorization': 'Bearer access_token'},
-                                             data=source_object)
+                                             headers={'Content-Type': 'application/json',
+                                                      'Authorization': 'Bearer access_token'},
+                                             json=source_object)
 
         assert actual_api_response == expected_api_response
 
@@ -206,7 +207,7 @@ class TestSaveDataset:
             "location": "folder/test"
         }
 
-        response_return_value = MagicMock(status_code=498, text='')
+        response_return_value = MagicMock(status_code=401, text='')
         response_return_value.json = MagicMock(return_value=expected_api_response)
         mocked_request_post.return_value = response_return_value
 
@@ -218,8 +219,9 @@ class TestSaveDataset:
         # Then
         assert mocked_request_post.call_count == 2
         assert mocked_request_post.call_args_list[1] == call('https://api.datagalaxy.com/v2/sources/1',
-                                                             data=source_object,
-                                                             headers={'Authorization': 'Bearer new_access_token'})
+                                                             json=source_object,
+                                                             headers={'Content-Type': 'application/json',
+                                                                      'Authorization': 'Bearer new_access_token'})
         assert actual_api_response == expected_api_response
 
 
@@ -304,7 +306,7 @@ class TestGetAccessToken:
         # Given
         integration_token = 'false_integration_token'
 
-        response_return_value = MagicMock(status_code=498, text='')
+        response_return_value = MagicMock(status_code=401, text='')
         request_get.return_value = response_return_value
 
         # When
