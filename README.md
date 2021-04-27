@@ -22,10 +22,8 @@ Finalement, pour visualiser les résultats de l'extraction de ces métadonnées,
 
 **Deduplication:**
 
-Le dossier deduplicate contient un ensemble de fichier .py representant les différentes étapes à effectuer pour faire une déduplication sur un dataset. Ces étapes sont explicitées dans les deux notebook d'exemples du dossier notebooks. Ils montrent un exemple d'utilisation de recordlinkge sur les données febrl et d'autres données d'usines.
+Le dossier deduplicate contient un ensemble de fichier .py representant les différentes étapes à effectuer pour faire une déduplication sur un dataset. Ces étapes sont explicitées dans les deux notebooks d'exemple du dossier notebooks. Ils montrent un exemple d'utilisation de recordlinkge sur les données febrl et d'autres données d'usines.
 
-Le dossier notebook/streamlit contient tous les élements nécessaires pour lancer la model_card. Pour afficher la model il suffit de se placer dans le dossier streamlit et lancer la commande streamlit run model_card.py
+Dans le dossier local_deps on retrouve les dépendances nécessaires pour lancer les notebooks, notamment les outils shapash et codecarbon. Pour voir les résultats de codecarbon il suffit de se placer dans le dossier ou est stocké le fichier emissions.csv puis de lancer la commande carbonboard --filepath="emissions.csv".
 
-Le dossier notebooks comprennent les notebooks pour tester les outils recordlinkage et holoclean en utilisant les données présents dans le dossier data.
-
-Dans le dossier local_deps on retrouve les dépendances nécessaires pour tester les outils, notament les outils shapash et codecarbon.
+Le dossier notebook/streamlit contient tous les élements nécessaires pour lancer la model_card. Pour afficher la model card il suffit de se placer dans le dossier streamlit et lancer la commande streamlit run model_card.py.
