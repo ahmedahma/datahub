@@ -4,6 +4,8 @@ Le dossier datahub comporte toutes les images nécessaires pour déployer datahu
 
 Pour déployer datahub en local, il suffit de se placer dans le dossier datahub et lancer la commande ./quickstart.sh depuis le terminal.
 
+La documentation officielle de Datahub est disponible ici: https://datahubproject.io/docs/
+
 Le dossier sample_pipeline comporte un exemple de pipeline de transformation de données. C'est sur cet exemple qu'on essaie de tester notre sonde.
 
 Le dossier sondes comporte les sondes qu'on a construites, qu'on peut retrouver dans le sous dossier use_case.
@@ -29,3 +31,17 @@ La sonde qui s'occupe de l'ingestion des modèles de Machine Learning est prése
 On peut la tester à l'instar des sondes de pipeline de traitement des données. Les résultats seront présents dans le fichier PROD/machine_learning dans la UI de Datahub.
 
  
+On peut également réaliser l'ingestion dans l'outil DataGalaxy qui permet de faire du cataloguing de données.
+
+Pour ce faire, on peut utiliser par exemple la sonde présente dans le fichier usecase/ingest_dataset_in_datagalaxy.py
+ 
+et suivre les mêmes étapes concernant les sondes de type Datahub. La documentation officielle de l'API de Datagalaxy
+
+est disponible ici : https://api.datagalaxy.com/v2/documentation/beta
+
+NB: Pour pouvoir tester l'ingestion et la visualiser sur Datagalaxy, il faut avoir un token d'integration au projet
+
+Datagalaxy en question au préalable. Il faudra aussi rajouter ce token aux variables d'environnement pour que les tests
+
+d'intégration fonctionnent correctement.
+
