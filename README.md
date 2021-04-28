@@ -1,5 +1,7 @@
 # TDF_Innovation
 
+**Extractionn des méta données:**
+
 Le dossier datahub comporte toutes les images nécessaires pour déployer datahub en local ( on peut se baser sur le readme du dossier ), ainsi que toutes les fonctions qu'on utilise pour construire les sondes ( qui sont plutôt dans le sous-dossier metadata-ingestion).
 
 Pour déployer datahub en local, il suffit de se placer dans le dossier datahub et lancer la commande ./quickstart.sh depuis le terminal.
@@ -17,3 +19,11 @@ Pour tester une extraction via ces sondes, il suffit de faire appel à la sonde 
 Ensuite, il faudra lancer l'application qui gère la pipeline et faire un GET ou un POST sur la route sur laquelle est exposé le use_case
 
 Finalement, pour visualiser les résultats de l'extraction de ces métadonnées, on peut les retrouver dans l'interface datahub, disponible sur localhost:9002 ( ou localhost:9001 ), en supposant qu'on a déjà déployé Datahub en local.
+
+**Deduplication:**
+
+Le dossier deduplicate contient un ensemble de fichier .py representant les différentes étapes à effectuer pour faire une déduplication sur un dataset. Ces étapes sont explicitées dans les deux notebooks d'exemple du dossier notebooks. Ils montrent un exemple d'utilisation de recordlinkge sur les données febrl et d'autres données d'usines.
+
+Dans le dossier local_deps on retrouve les dépendances nécessaires pour lancer les notebooks, notamment les outils shapash et codecarbon. Pour voir les résultats de codecarbon il suffit de se placer dans le dossier ou est stocké le fichier emissions.csv puis de lancer la commande carbonboard --filepath="emissions.csv".
+
+Le dossier notebook/streamlit contient tous les élements nécessaires pour lancer la model_card. Pour afficher la model card il suffit de se placer dans le dossier streamlit et lancer la commande streamlit run model_card.py.
