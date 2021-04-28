@@ -2,6 +2,8 @@
 
 Le dossier datahub comporte toutes les images nécessaires pour déployer datahub en local ( on peut se baser sur le readme du dossier ), ainsi que toutes les fonctions qu'on utilise pour construire les sondes (qui sont plutôt dans le sous-dossier metadata-ingestion). Pour utiliser ces fonctions il faudra installer les librairies du setup.py du dossier metadata_ingestion.
 
+**Extractionn des méta données:**
+
 Pour déployer datahub en local, il suffit de se placer dans le dossier datahub et lancer la commande ./quickstart.sh depuis le terminal.
 
 La documentation officielle de Datahub est disponible ici: https://datahubproject.io/docs/
@@ -45,3 +47,10 @@ Datagalaxy en question au préalable. Il faudra aussi rajouter ce token aux vari
 
 d'intégration fonctionnent correctement.
 
+**Deduplication:**
+
+Le dossier deduplicate contient un ensemble de fichier .py representant les différentes étapes à effectuer pour faire une déduplication sur un dataset. Ces étapes sont explicitées dans les deux notebooks d'exemple du dossier notebooks. Ils montrent un exemple d'utilisation de recordlinkge sur les données febrl et d'autres données d'usines.
+
+Dans le dossier local_deps on retrouve les dépendances nécessaires pour lancer les notebooks, notamment les outils shapash et codecarbon. Pour voir les résultats de codecarbon il suffit de se placer dans le dossier ou est stocké le fichier emissions.csv puis de lancer la commande carbonboard --filepath="emissions.csv".
+
+Le dossier notebook/streamlit contient tous les élements nécessaires pour lancer la model_card. Pour afficher la model card il suffit de se placer dans le dossier streamlit et lancer la commande streamlit run model_card.py.
