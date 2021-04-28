@@ -47,6 +47,7 @@ Datagalaxy en question au préalable. Il faudra aussi rajouter ce token aux vari
 
 d'intégration fonctionnent correctement.
 
+
 **Deduplication:**
 
 Le dossier deduplicate contient un ensemble de fichier .py representant les différentes étapes à effectuer pour faire une déduplication sur un dataset. Ces étapes sont explicitées dans les deux notebooks d'exemple du dossier notebooks. Ils montrent un exemple d'utilisation de recordlinkge sur les données febrl et d'autres données d'usines.
