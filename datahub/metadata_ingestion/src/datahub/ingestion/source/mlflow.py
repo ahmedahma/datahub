@@ -7,8 +7,8 @@ from datahub.configuration import ConfigModel
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.source.metadata_common import MetadataWorkUnit
-from datahub.metadata import DatasetPropertiesClass
-from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import DatasetSnapshot
+from datahub.metadata import MLModelPropertiesClass
+from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import MLModelSnapshot
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 
 
@@ -46,29 +46,32 @@ class MlFlowSource(Source):
         platform = 'mlflow'
         env = 'PROD'
 
-        dataset_name_list = self.get_mlflow_objects(self.mlflow_client)
+        mlmodel_experiments_list = self.get_mlflow_objects(self.mlflow_client)
 
-        for dataset_name in dataset_name_list:
+        for mlmodel_experiment in mlmodel_experiments_list:
             mce = MetadataChangeEvent()
-            dataset_snapshot = DatasetSnapshot()
-            dataset_snapshot.urn = f"urn:li:dataset:(urn:li:dataPlatform:{platform},{dataset_name},{env})"
+            mlmodel_snapshot = MLModelSnapshot()
+            mlmodel_snapshot.urn = f"urn:li:mlModel:(urn:li:dataPlatform:{platform},{mlmodel_experiment},{env})"
 
-            dataset_properties = DatasetPropertiesClass(
+            mlmodel_properties = MLModelPropertiesClass(
                 tags=[],
-                customProperties={},
+                hyperParameters={},
+                mlFeatures=[]
             )
-            dataset_snapshot.aspects.append(dataset_properties)
+            mlmodel_snapshot.aspects.append(mlmodel_properties)
 
-            mce.proposedSnapshot = dataset_snapshot
+            mce.proposedSnapshot = mlmodel_snapshot
 
-            wu = MetadataWorkUnit(id=dataset_name, mce=mce)
+            wu = MetadataWorkUnit(id=mlmodel_experiment, mce=mce)
             self.report.report_workunit(wu)
             yield wu
 
     @staticmethod
     def get_mlflow_objects(mlflow_client: mlflow.tracking.MlflowClient) -> List[str]:
         experiment_list = mlflow_client.list_experiments()
-        experiment_name_list = [experiment.name for experiment in experiment_list]
+        default_experiment_name = 'Default'
+        experiment_name_list = [experiment.name for experiment in experiment_list if
+                                experiment.name != default_experiment_name]
         return experiment_name_list
 
     def get_report(self) -> MlFlowSourceReport:

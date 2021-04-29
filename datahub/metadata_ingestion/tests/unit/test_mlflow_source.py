@@ -35,6 +35,7 @@ class MlFlowSourceTest(unittest.TestCase):
         mlflow_client = mlflow.tracking.MlflowClient(tracking_uri='localhost:5000')
 
         mocked_mlflow.return_value = [
+            Experiment(name='Default', artifact_location='default_artifact', experiment_id=0, lifecycle_stage=''),
             Experiment(name='first_experiment', artifact_location='mock_1', experiment_id=1, lifecycle_stage=''),
             Experiment(name='second_experiment', artifact_location='mock_2', experiment_id=2, lifecycle_stage='')]
 
@@ -68,8 +69,8 @@ class MlFlowSourceTest(unittest.TestCase):
 
         first_workunit = workunits[0]
         assert first_workunit.__dict__['mce']['proposedSnapshot'][
-                   'urn'] == f'urn:li:dataset:(urn:li:dataPlatform:mlflow,{experiments_name[0]},PROD)'
+                   'urn'] == f'urn:li:mlModel:(urn:li:dataPlatform:mlflow,{experiments_name[0]},PROD)'
 
         second_workunit = workunits[1]
         assert second_workunit.__dict__['mce']['proposedSnapshot'][
-                   'urn'] == f'urn:li:dataset:(urn:li:dataPlatform:mlflow,{experiments_name[1]},PROD)'
+                   'urn'] == f'urn:li:mlModel:(urn:li:dataPlatform:mlflow,{experiments_name[1]},PROD)'
