@@ -1,18 +1,25 @@
+import shutil
 import unittest
+from typing import List
 
 import mlflow
-
 from datahub.ingestion.run.pipeline import Pipeline
-from tests.test_helpers.mce_helpers import load_json_file, assert_mces_equal
+
+from test_helpers.mce_helpers import load_json_file, assert_mces_equal
 
 
-#TODO: refacto : delete experiments + move file to integration tests
+def delete_mlflow_experiments(tracking_uri: str, experiments_to_delete: List[str]):
+    mlflow_client = mlflow.tracking.MlflowClient(tracking_uri)
+    for experiment in experiments_to_delete:
+        mlflow_client.delete_experiment(experiment)
+    shutil.rmtree(f'./{tracking_uri}/.trash')
 
 
 class MlFlowTest(unittest.TestCase):
     def test_mlflow_ingests_multiple_mlflow_experiments_successfully(self):
         # Given:
-        mlflow_client = mlflow.tracking.MlflowClient(tracking_uri='localhost:5000')
+        tracking_uri = 'localhost:5000'
+        mlflow_client = mlflow.tracking.MlflowClient(tracking_uri)
         first_experiment_id = mlflow_client.create_experiment(name='first_experiment')
         second_experiment_id = mlflow_client.create_experiment(name='second_experiment')
 
@@ -39,11 +46,9 @@ class MlFlowTest(unittest.TestCase):
         pipeline.run()
         pipeline.raise_from_status()
         status = pipeline.pretty_print_summary()
-
-        mlflow_client.delete_experiment(first_experiment_id)
-        mlflow_client.delete_experiment(second_experiment_id)
-
         output_mce = load_json_file(filename="./mlflow_mce.json")
+
+        delete_mlflow_experiments(tracking_uri, [first_experiment_id, second_experiment_id])
 
         # Then
         assert status == 0

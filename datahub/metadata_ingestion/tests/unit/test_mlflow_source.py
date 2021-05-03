@@ -15,18 +15,15 @@ class MlFlowSourceTest(unittest.TestCase):
             'tracking_uri': 'localhost:5000',
         }
 
-        expected_mlflow_config = config
         expected_mlflow_client_tracking_uri = config['tracking_uri']
 
         # When:
         ctx = PipelineContext(run_id="test")
         mlflow_source = MlFlowSource.create(config, ctx)
 
-        actual_mlflow_config = mlflow_source.__dict__['config']
         actual_mlflow_client_tracking_uri = mlflow_source.__dict__['mlflow_client']._registry_uri
 
         # Then:
-        assert actual_mlflow_config == expected_mlflow_config
         assert actual_mlflow_client_tracking_uri == expected_mlflow_client_tracking_uri
 
     @patch("datahub.ingestion.source.mlflow.mlflow.tracking.MlflowClient.list_experiments")
@@ -35,7 +32,6 @@ class MlFlowSourceTest(unittest.TestCase):
         mlflow_client = mlflow.tracking.MlflowClient(tracking_uri='localhost:5000')
 
         mocked_mlflow.return_value = [
-            Experiment(name='Default', artifact_location='default_artifact', experiment_id=0, lifecycle_stage=''),
             Experiment(name='first_experiment', artifact_location='mock_1', experiment_id=1, lifecycle_stage=''),
             Experiment(name='second_experiment', artifact_location='mock_2', experiment_id=2, lifecycle_stage='')]
 
@@ -52,7 +48,7 @@ class MlFlowSourceTest(unittest.TestCase):
             'tracking_uri': 'localhost:5000'
         }
 
-        experiments_name = ['first_experiment', 'second_experiment']
+        experiments_name = ['Default', 'first_experiment', 'second_experiment']
 
         # When
         ctx = PipelineContext(run_id="test")
@@ -69,8 +65,8 @@ class MlFlowSourceTest(unittest.TestCase):
 
         first_workunit = workunits[0]
         assert first_workunit.__dict__['mce']['proposedSnapshot'][
-                   'urn'] == f'urn:li:mlModel:(urn:li:dataPlatform:mlflow,{experiments_name[0]},PROD)'
+                   'urn'] == f'urn:li:mlModel:(urn:li:dataPlatform:mlflow,{experiments_name[1]},PROD)'
 
         second_workunit = workunits[1]
         assert second_workunit.__dict__['mce']['proposedSnapshot'][
-                   'urn'] == f'urn:li:mlModel:(urn:li:dataPlatform:mlflow,{experiments_name[1]},PROD)'
+                   'urn'] == f'urn:li:mlModel:(urn:li:dataPlatform:mlflow,{experiments_name[2]},PROD)'

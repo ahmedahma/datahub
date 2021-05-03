@@ -4,6 +4,7 @@ from typing import Iterable, List
 import mlflow.sklearn
 
 from datahub.configuration import ConfigModel
+from datahub.configuration.common import AllowDenyPattern
 from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.source.metadata_common import MetadataWorkUnit
@@ -12,12 +13,10 @@ from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import MLModel
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 
 
-## TODO: ALLOW_DENY_LIST
-## TODO: HOST/PORT + TRACKING_URI, REGISTRY URI ?
-## TODO: second type of servers
-
 class MlFlowConfig(ConfigModel):
     tracking_uri: str
+
+    experiment_pattern: AllowDenyPattern = AllowDenyPattern(deny=["Default"])
 
 
 @dataclass
@@ -46,12 +45,16 @@ class MlFlowSource(Source):
         platform = 'mlflow'
         env = 'PROD'
 
-        mlmodel_experiments_list = self.get_mlflow_objects(self.mlflow_client)
+        experiment_names = self.get_mlflow_objects(self.mlflow_client)
 
-        for mlmodel_experiment in mlmodel_experiments_list:
+        for experiment_name in experiment_names:
+            if not self.config.experiment_pattern.allowed(experiment_name):
+                self.report.report_dropped(experiment_name)
+                continue
+
             mce = MetadataChangeEvent()
             mlmodel_snapshot = MLModelSnapshot()
-            mlmodel_snapshot.urn = f"urn:li:mlModel:(urn:li:dataPlatform:{platform},{mlmodel_experiment},{env})"
+            mlmodel_snapshot.urn = f"urn:li:mlModel:(urn:li:dataPlatform:{platform},{experiment_name},{env})"
 
             mlmodel_properties = MLModelPropertiesClass(
                 tags=[],
@@ -62,16 +65,14 @@ class MlFlowSource(Source):
 
             mce.proposedSnapshot = mlmodel_snapshot
 
-            wu = MetadataWorkUnit(id=mlmodel_experiment, mce=mce)
+            wu = MetadataWorkUnit(id=experiment_name, mce=mce)
             self.report.report_workunit(wu)
             yield wu
 
     @staticmethod
     def get_mlflow_objects(mlflow_client: mlflow.tracking.MlflowClient) -> List[str]:
         experiment_list = mlflow_client.list_experiments()
-        default_experiment_name = 'Default'
-        experiment_name_list = [experiment.name for experiment in experiment_list if
-                                experiment.name != default_experiment_name]
+        experiment_name_list = [experiment.name for experiment in experiment_list]
         return experiment_name_list
 
     def get_report(self) -> MlFlowSourceReport:
