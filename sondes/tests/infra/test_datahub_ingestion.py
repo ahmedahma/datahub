@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 from pydantic.error_wrappers import ValidationError
-from src.infra.datahub_ingestion import _create_pipeline, send_event_and_run_ingestion
+from sondes.infra.datahub_ingestion import _create_pipeline, send_event_and_run_ingestion
 
 from datahub.configuration import DynamicTypedConfig
 from datahub.ingestion.run.pipeline import SourceConfig
@@ -75,7 +75,7 @@ def test_create_pipeline_raises_error_given_incorrect_configuration(dataset_mce_
     assert 'field required', 'validation error' in str(errors.value)
 
 
-@patch('src.infra.datahub_ingestion._run_ingestion_pipeline')
+@patch('sondes.infra.datahub_ingestion._run_ingestion_pipeline')
 def test_send_event_and_run_ingestion_runs_successfully_given_correct_mce(mocked_run_ingestion_pipeline,
                                                                           dataset_mce_object):
     # Given

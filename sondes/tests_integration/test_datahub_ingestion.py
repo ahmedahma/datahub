@@ -2,7 +2,7 @@ import json
 import os
 
 import pytest
-from src.infra.datahub_ingestion import send_event_and_run_ingestion
+from sondes.infra.datahub_ingestion import send_event_and_run_ingestion
 
 
 @pytest.fixture

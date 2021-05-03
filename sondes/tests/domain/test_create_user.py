@@ -2,7 +2,7 @@ import json
 import os
 
 import pytest
-from src.domain.create_user import create_user
+from sondes.domain.create_user import create_user
 
 
 @pytest.fixture

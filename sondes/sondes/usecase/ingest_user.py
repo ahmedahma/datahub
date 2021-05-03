@@ -1,7 +1,7 @@
 from typing import Dict
 
-from src.domain.create_user import create_user
-from src.infra.datahub_ingestion import send_event_and_run_ingestion
+from sondes.domain.create_user import create_user
+from sondes.infra.datahub_ingestion import send_event_and_run_ingestion
 
 
 def ingest_user(user_model: Dict):
