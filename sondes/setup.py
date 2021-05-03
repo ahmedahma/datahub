@@ -6,7 +6,7 @@ setup(name='sondes',
       url='git@gitlab.com:asaboni/tdf_innovation.git',
       author='Amine Saboni, Ahmed Alaoui',
       author_email='amine.saboni@octo.com, a.alaoui.abdallaoui@octo.com',
-      packages=['src'],
+      packages=['sondes'],
       install_requires=[
             'fastapi',
             'uvicorn',

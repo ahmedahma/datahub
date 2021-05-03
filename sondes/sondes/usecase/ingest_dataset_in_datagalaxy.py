@@ -1,6 +1,6 @@
 from typing import Dict
 
-from src.infra.repository.datagalaxy_dataset_repository import DataGalaxyDatasetRepository
+from sondes.infra.repository.datagalaxy_dataset_repository import DataGalaxyDatasetRepository
 
 
 def ingest_dataset_in_datagalaxy(dataset_object: Dict, version_id: str):

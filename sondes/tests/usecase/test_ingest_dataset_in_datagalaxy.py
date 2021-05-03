@@ -1,5 +1,5 @@
-from src.infra.repository.datagalaxy_dataset_repository import DataGalaxyDatasetRepository
-from src.usecase.ingest_dataset_in_datagalaxy import ingest_dataset_in_datagalaxy
+from sondes.infra.repository.datagalaxy_dataset_repository import DataGalaxyDatasetRepository
+from sondes.usecase.ingest_dataset_in_datagalaxy import ingest_dataset_in_datagalaxy
 
 
 def test_ingest_dataset_in_datagalaxy_ingests_dataset_successfully_in_datagalaxy():

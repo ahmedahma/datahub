@@ -2,7 +2,7 @@ import json
 import os
 
 import pytest
-from src.domain.create_dataset import create_dataset
+from sondes.domain.create_dataset import create_dataset
 
 
 @pytest.fixture

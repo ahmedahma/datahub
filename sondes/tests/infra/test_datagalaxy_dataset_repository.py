@@ -1,13 +1,13 @@
 from unittest.mock import patch, MagicMock, call
 
 import pytest
-from src.infra.repository.datagalaxy_dataset_repository import DataGalaxyDatasetRepository, DataGalaxyException, \
+from sondes.infra.repository.datagalaxy_dataset_repository import DataGalaxyDatasetRepository, DataGalaxyException, \
     _get_access_token
 
 
 class TestGetById:
-    @patch('src.infra.repository.datagalaxy_dataset_repository.requests.get')
-    @patch('src.infra.repository.datagalaxy_dataset_repository._get_access_token',
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository.requests.get')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository._get_access_token',
            return_value='access_token')
     def test_get_by_id_returns_request_response_from_api(self, mocked_access_token, request_get):
         # Given
@@ -39,8 +39,8 @@ class TestGetById:
 
         assert actual_api_response == expected_api_response
 
-    @patch('src.infra.repository.datagalaxy_dataset_repository.requests.get', side_effect=Exception)
-    @patch('src.infra.repository.datagalaxy_dataset_repository._get_access_token')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository.requests.get', side_effect=Exception)
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository._get_access_token')
     def test_get_by_id_raises_exception_when_api_call_fails_with_connection_error(self, mocked_access_token,
                                                                                   request_get):
         # Given
@@ -56,8 +56,8 @@ class TestGetById:
         # Then
         assert str(datagalaxy_exception.value) == "Error connecting Datagalaxy API "
 
-    @patch('src.infra.repository.datagalaxy_dataset_repository.requests.get')
-    @patch('src.infra.repository.datagalaxy_dataset_repository._get_access_token')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository.requests.get')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository._get_access_token')
     def test_get_by_id_returns_request_response_from_api_when_using_expired_token_after_recalling_api_with_correct_token(
             self, mocked_access_token,
             mocked_request_get):
@@ -93,8 +93,8 @@ class TestGetById:
 
 
 class TestSaveDataset:
-    @patch('src.infra.repository.datagalaxy_dataset_repository.requests.post')
-    @patch('src.infra.repository.datagalaxy_dataset_repository._get_access_token',
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository.requests.post')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository._get_access_token',
            return_value='access_token')
     def test_save_dataset_posts_source_in_datagalaxy_api(self, mocked_access_token, request_post):
         # Given
@@ -140,8 +140,8 @@ class TestSaveDataset:
 
         assert actual_api_response == expected_api_response
 
-    @patch('src.infra.repository.datagalaxy_dataset_repository.requests.post', side_effect=Exception)
-    @patch('src.infra.repository.datagalaxy_dataset_repository._get_access_token')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository.requests.post', side_effect=Exception)
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository._get_access_token')
     def test_save_dataset_raises_exception_when_api_call_fails_with_connection_error(self, mocked_access_token,
                                                                                      request_post):
         # Given
@@ -174,8 +174,8 @@ class TestSaveDataset:
         # Then
         assert str(datagalaxy_exception.value) == "Error connecting Datagalaxy API "
 
-    @patch('src.infra.repository.datagalaxy_dataset_repository.requests.post')
-    @patch('src.infra.repository.datagalaxy_dataset_repository._get_access_token')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository.requests.post')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository._get_access_token')
     def test_save_dataset_posts_source_in_datagalaxy_when_using_expired_token_after_recalling_api_with_correct_token(
             self, mocked_access_token,
             mocked_request_post):
@@ -226,8 +226,8 @@ class TestSaveDataset:
 
 
 class TestGetAll:
-    @patch('src.infra.repository.datagalaxy_dataset_repository.requests.get')
-    @patch('src.infra.repository.datagalaxy_dataset_repository._get_access_token',
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository.requests.get')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository._get_access_token',
            return_value='access_token')
     def test_get_all_sources_returns_request_response_from_api(self, mocked_access_token, request_get):
         # Given
@@ -279,7 +279,7 @@ class TestGetAll:
 
 
 class TestGetAccessToken:
-    @patch('src.infra.repository.datagalaxy_dataset_repository.requests.get')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository.requests.get')
     def test_get_access_token_returns_correct_access_token_from_integration_token(self, request_get):
         # Given
         integration_token = 'integration_token'
@@ -301,7 +301,7 @@ class TestGetAccessToken:
 
         assert actual_access_token == expected_access_token
 
-    @patch('src.infra.repository.datagalaxy_dataset_repository.requests.get')
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository.requests.get')
     def test_get_access_token_raises_exception_when_using_false_token(self, request_get):
         # Given
         integration_token = 'false_integration_token'
