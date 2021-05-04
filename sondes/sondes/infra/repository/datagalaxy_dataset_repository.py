@@ -24,7 +24,7 @@ class DatasetAbstractRepository(abc.ABC):
 
 class DataGalaxyDatasetRepository(DatasetAbstractRepository):
     def __init__(self):
-        self.integration_token = os.environ.get("DATAGALAXY_INTEGRATION_TOKEN")
+        self.integration_token = os.environ.get("DATAGALAXY_INTEGRATION_TOKEN",'')
         self.access_token = _get_access_token(self.integration_token)
 
     def get_by_id(self, dataset_id, version_id):
