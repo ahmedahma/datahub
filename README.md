@@ -46,6 +46,44 @@ Datagalaxy en question au préalable. Il faudra aussi rajouter ce token aux vari
 d'intégration fonctionnent correctement.
 
 
+Les exemples de sondes qu'on a illustré servent à faire de l'ingestion de métadonnées à partir d'une pipeline dans une approche Push.
+
+Il est cependant possible aussi de réaliser de l'ingestion de métadonnées en mode pull grâce à Datahub. En effet, Datahub fournit plusieurs
+
+sources de métadonnées, en créant un connecteur pour chaque source ( qu'on peut retrouver dans le dossier sources dans /datahub/metadata_ingestion/).
+
+Un schéma qui explique les différentes approches Pull/Push et les différentes méthodes d'ingestion que propose Datahub est disponible
+
+ici : https://datahubproject.io/docs/architecture/metadata-ingestion/
+
+L'un des aspects qu'on a creusé durant notre projet c'est l'injection des métadonnées de machine learning depuis un server mlflow, dans une 
+
+approche Pull. Pour ce faire on a développé un nouveau connecteur mlflow sur Datahub ( MlFlowSource ) qui permettra de faire la connexion
+
+à un server mlflow et récupérer les métadonnées qui nous intéressent, selon le modèle de métadonnées qu'on a fixé. 
+
+Pour illustrer cette ingestion en pull, on peut monter un server mlflow ( généralement dans le localhost:5000) et créer des 
+
+expériences dessus. Ensuite il suffit de créer la bonne configuration de la pipeline d'ingestion (un exemple est donné 
+
+dans le fichier datahub/docker/ingestion/sample_recipe.yml) et lancer la commande suivante depuis le terminal :
+
+datahub ingest -c datahub/docker/ingestion/sample_recipe.yml
+
+NB: Pour l'instant on ne pourra pas visualiser les résultats sur Datahub car l'affichage des modèles ML est toujours en cours
+
+de développement de leur côté. Cependant on pourra visualiser les logs au niveau du terminal pour s'assurer que l'ingestion s'est bien déroulée.
+
+On peut également choisir notre console ou un fichier de notre choix où on pourra répertorier les résultats de l'ingestion, il suffit
+
+de changer la configuration du fichier sample_recipe.yml.
+
+NB2: Pour bien voir les résultats de l'ingestion il faut s'assurer que les nouvelles experiments qu'on a créé côté mlflow 
+
+ne se retrouvent pas dans la Default experiment de mlflow, car on filtre sur cette dernière au niveau du connecteur.
+
+
+
 **Deduplication:**
 
 Le dossier deduplicate contient un ensemble de fichier .py representant les différentes étapes à effectuer pour faire une déduplication sur un dataset. Ces étapes sont explicitées dans les deux notebooks d'exemple du dossier notebooks. Ils montrent un exemple d'utilisation de recordlinkge sur les données febrl et d'autres données d'usines.
