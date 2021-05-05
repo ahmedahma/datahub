@@ -15,7 +15,5 @@ setup(name='deduplicate',
           'numpy',
           'pandas',
           'recordlinkage',
-          'shapash',
-          'sklearn',
-          'tox'
+          'sklearn'
       ])
