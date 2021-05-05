@@ -1,10 +1,10 @@
 tdf_innovation
-local_deps
+deduplicate/local_deps
 streamlit/.idea
 notebooks/.ipynb_checkpoints
 notebooks/emissions.csv
 notebooks/intel_power_gadget_log.csv
-local_deps/holoclean
+deduplicate/local_deps/holoclean
 streamlit/intel_power_gadget_log.csv
 streamlit/emissions.csv
 test_recordlinkage
@@ -12,6 +12,6 @@ test_recordlinkage
 ../.idea/
 tdf_innovation.egg-info
 deduplicate.egg-info
-tests/__pycache__/
+deduplicate/tests/__pycache__/
 deduplicate/__pycache__/
 tdf_innovation

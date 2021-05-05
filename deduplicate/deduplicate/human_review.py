@@ -1,5 +1,5 @@
 import pandas as pd
-from local_deps.shapash.shapash.explainer.smart_explainer import SmartExplainer
+from deduplicate.local_deps import SmartExplainer
 
 
 def explain(X_test: pd.DataFrame, y_test: pd.DataFrame, classifier: object, features: dict):
