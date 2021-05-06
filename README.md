@@ -82,6 +82,11 @@ NB2: Pour bien voir les résultats de l'ingestion il faut s'assurer que les nouv
 
 ne se retrouvent pas dans la Default experiment de mlflow, car on filtre sur cette dernière au niveau du connecteur.
 
+Pour exploiter ce connecteur on a créé un exemple de cron qui tourne chaque jour pour récupérer les métadonnées générées
+
+par MlFlow et les ingérer sur Datahub. L'exemple est disponible dans le fichier cron/mlflow_pull_ingestion. On pourra configurer
+
+ce cron selon notre besoin d'ingestion.
 
 
 **Deduplication:**
