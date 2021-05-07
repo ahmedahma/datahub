@@ -8,6 +8,7 @@ image: python:latest
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
+
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
 #
@@ -29,3 +30,4 @@ test:
     - cd sondes/
     - pip install tox
     - tox -e unit
+    - tox -e integration
