@@ -89,6 +89,13 @@ par MlFlow et les ingérer sur Datahub. L'exemple est disponible dans le fichier
 ce cron selon notre besoin d'ingestion.
 
 
+Concernant le déploiement, on a packagé le dossier sondes et on a choisi tox comme techno pour gérer les tests. La documentation de tox est disponible ici: https://tox.readthedocs.io/en/latest/. 
+
+Les fonctions de datahub qu’on utilise ont été importées du repository https://github.com/linkedin/datahub. 
+
+On a également mis en place une CI sur gitlab, où on lance principalement les tests unitaires et les tests d’intégration. 
+
+
 **Deduplication:**
 
 Le dossier deduplicate contient un ensemble de fichier .py representant les différentes étapes à effectuer pour faire une déduplication sur un dataset. Ces étapes sont explicitées dans les deux notebooks d'exemple du dossier notebooks. Ils montrent un exemple d'utilisation de recordlinkge sur les données febrl et d'autres données d'usines.
