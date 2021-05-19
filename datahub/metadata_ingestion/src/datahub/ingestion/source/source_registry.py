@@ -77,3 +77,10 @@ try:
     source_registry.register("druid", DruidSource)
 except ImportError as e:
     source_registry.register_disabled("druid", e)
+
+try:
+    from .mlflow import MlFlowSource
+
+    source_registry.register("mlflow", MlFlowSource)
+except ImportError as e:
+    source_registry.register_disabled("mlflow", e)

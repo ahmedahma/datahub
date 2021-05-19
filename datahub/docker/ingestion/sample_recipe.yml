@@ -1,11 +1,9 @@
 source:
-  type: postgres
+  type: mlflow
   config:
-    username: datahub
-    password: datahub
-    host_port: postgres:5432
+    tracking_uri: 'localhost:5000'
 
 sink:
   type: "datahub-rest"
   config:
-    server: 'http://datahub-gms:8080'
+    server: 'http://localhost:8080'

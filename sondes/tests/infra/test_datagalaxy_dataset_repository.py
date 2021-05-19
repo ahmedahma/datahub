@@ -316,3 +316,17 @@ class TestGetAccessToken:
 
         # Then
         assert str(datagalaxy_exception.value) == "Error getting API Datagalaxy token "
+
+    @patch('sondes.infra.repository.datagalaxy_dataset_repository.requests.get')
+    def test_get_access_token_raises_exception_when_integration_token_is_none(self, request_get):
+        # Given
+        response_return_value = MagicMock(status_code=401, text='')
+        request_get.return_value = response_return_value
+
+        # When
+
+        with pytest.raises(DataGalaxyException) as datagalaxy_exception:
+            _get_access_token(None)
+
+        # Then
+        assert str(datagalaxy_exception.value) == "Error Datagalaxy token is None"

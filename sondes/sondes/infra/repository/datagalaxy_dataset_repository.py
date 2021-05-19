@@ -24,7 +24,7 @@ class DatasetAbstractRepository(abc.ABC):
 
 class DataGalaxyDatasetRepository(DatasetAbstractRepository):
     def __init__(self):
-        self.integration_token = os.environ.get("DATAGALAXY_INTEGRATION_TOKEN")
+        self.integration_token = os.environ.get("DATAGALAXY_INTEGRATION_TOKEN", None)
         self.access_token = _get_access_token(self.integration_token)
 
     def get_by_id(self, dataset_id, version_id):
@@ -96,6 +96,9 @@ class DataGalaxyDatasetRepository(DatasetAbstractRepository):
 
 def _get_access_token(integration_token):
     api_url = 'https://api.datagalaxy.com/v2/credentials'
+    if not integration_token:
+        raise DataGalaxyException(f'Error Datagalaxy token is None')
+
     headers = {'Authorization': 'Bearer ' + integration_token}
     try:
         api_response = requests.get(api_url, headers=headers)
