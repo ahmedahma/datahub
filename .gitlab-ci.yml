@@ -30,4 +30,3 @@ test:
     - cd sondes/
     - pip install tox
     - tox -e unit
-    - tox -e integration
