@@ -8,11 +8,11 @@ DATAHUB_HOST = 'localhost'
 DATAHUB_PORT = '8080'
 
 
-def send_event_and_run_ingestion(mce_json: Dict):
+def send_event_and_run_ingestion(mce_json: Dict, sink='datahub-rest'):
     mce_file_pathname = _build_mce_file_pathname()
     _dump_mce_in_file(mce_json, mce_file_pathname)
 
-    pipeline_config = _create_pipeline_configuration(mce_file_pathname)
+    pipeline_config = _create_pipeline_configuration(mce_file_pathname, sink)
     ingestion_status_code = _run_ingestion_pipeline(pipeline_config)
 
     os.remove(mce_file_pathname)
@@ -49,20 +49,33 @@ def _create_pipeline(pipeline_config: Dict) -> Pipeline:
     return pipeline
 
 
-# localhost !!?
-def _create_pipeline_configuration(mce_file_pathname: str) -> Dict:
-    pipeline_config = {
-        "source": {
-            "type": "file",
-            "config": {
-                "filename": mce_file_pathname,
+def _create_pipeline_configuration(mce_file_pathname: str, sink) -> Dict:
+    if sink == 'datahub-rest':
+        pipeline_config = {
+            "source": {
+                "type": "file",
+                "config": {
+                    "filename": mce_file_pathname,
+                },
             },
-        },
-        "sink": {
-            "type": "datahub-rest",
-            "config": {
-                "server": f"http://{DATAHUB_HOST}:{DATAHUB_PORT}"
-            }
-        },
-    }
+            "sink": {
+                "type": "datahub-rest",
+                "config": {
+                    "server": f"http://{DATAHUB_HOST}:{DATAHUB_PORT}"
+                }
+            },
+        }
+    else:
+        pipeline_config = {
+            "source": {
+                "type": "file",
+                "config": {
+                    "filename": mce_file_pathname,
+                },
+            },
+            "sink": {
+                "type": "console",
+            },
+        }
+
     return pipeline_config

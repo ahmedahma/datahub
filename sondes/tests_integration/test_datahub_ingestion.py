@@ -15,12 +15,13 @@ def dataset_mce_object():
     return dataset_mce_object
 
 
-def test_ingest_data_in_datahub_ingests_dataset_succefully_given_correct_dataset_mce(dataset_mce_object, capsys):
+def test_ingest_data_in_console_ingests_dataset_succefully_given_correct_dataset_mce(dataset_mce_object, capsys):
     # Given
     dataset_mce_json = dataset_mce_object
+    sink = 'console'
 
     # When
-    send_event_and_run_ingestion(dataset_mce_json)
+    send_event_and_run_ingestion(dataset_mce_json, sink)
 
     # Then
     captured = capsys.readouterr()
@@ -28,13 +29,14 @@ def test_ingest_data_in_datahub_ingests_dataset_succefully_given_correct_dataset
     assert 'Pipeline finished successfully' in captured.out
 
 
-def test_ingest_data_in_datahub_fails_when_mce_is_not_in_correct_format(capsys):
+def test_ingest_data_in_console_fails_when_mce_is_not_in_correct_format(capsys):
     # Given
     fake_dataset_mce = {'fake': 'fake'}
+    sink = 'console'
 
     # When
     with pytest.raises(ValueError) as errors:
-        send_event_and_run_ingestion(fake_dataset_mce)
+        send_event_and_run_ingestion(fake_dataset_mce, sink)
 
     # Then
 

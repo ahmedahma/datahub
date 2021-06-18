@@ -12,6 +12,7 @@ setup(name='sondes',
             'uvicorn',
             'apache-airflow',
             'pandas',
-            'numpy'
+            'numpy',
+            'requests'
       ],
       zip_safe=False)
