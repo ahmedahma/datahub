@@ -1,42 +1,105 @@
-import numpy as np
+from click._compat import raw_input
+from sondes.infra.repository.datagalaxy_dataset_repository import DataGalaxyDatasetRepository
 
-from sample_pipeline.domain.transformation_pipeline import build_normalized_mes_context_table_from_mes_context
-from sample_pipeline.infra.load_tables import load_table_from_dump_name
+from sondes.usecase.ingest_dataset import ingest_dataset
+from sondes.usecase.ingest_dataset_in_datagalaxy import ingest_dataset_in_datagalaxy
 
 
 def construct_temporal_trace_refined_table_from_rousset_fdc_data():
+    repository = DataGalaxyDatasetRepository()
+    version_id = '2f21af4f-c434-40c7-8543-98121bbb62df'
 
-    # Load Datafiles
-    MES_ASSOCIATION_TABLE_METADATA = {
-        'filename': 'PCB.MESFDCAssociation.dump',
-        'names': ['context_id', 'mes_context_id'],
-        'types': {
-            'context_id': np.int64,
-            'mes_context_id': np.int64,
-        },
-        'null_value': 'N.A.'
-    }
-    MES_CONTEXT_DEFINITION_TABLE_TABLE_METADATA = {
-        'filename': 'PCB.MESContextHistory.dump',
-        'names': ['mes_context_id', 'technology_name', 'product_name', 'lot_name', 'wafer_name',
-                  'route_name', 'stage_name', 'operation_name', 'aux1', 'aux2'],
-        'types': {
-            'mes_context_id': np.float64,
-            'technology_name': str,
-            'product_name': str,
-            'lot_name': str,
-            'wafer_name': str,
-            'route_name': str,
-            'stage_name': str,
-            'operation_name': str,
-            'aux1': str,
-            'aux2': str
-        },
-        'null_value': 'N.A.'
+    datahub_object = {
+        'dataplatform_name': 'tdf_demo_folder_2',
+        'dataset_name': 'tdf_demo_pipeline_2',
+        'fields': [
+            {
+                # DATASET COLUMN
+                'name': 'context_id',
+                'type': 'integer',
+                'pegasus_type': 'IntegerType',
+                'description': 'hello id'
+            },
+            {
+                # DATASET COLUMN
+                'name': 'mes_context_id',
+                'type': 'integer',
+                'pegasus_type': 'IntegerType',
+                'description': 'second id'
+            }
+        ]
     }
 
-    mes_context_definition_table = load_table_from_dump_name(MES_CONTEXT_DEFINITION_TABLE_TABLE_METADATA)
-    mes_association_table = load_table_from_dump_name(MES_ASSOCIATION_TABLE_METADATA)
-    normalized_mes_context_table = build_normalized_mes_context_table_from_mes_context(mes_context_definition_table,
-                                                                                       mes_association_table)
-    return normalized_mes_context_table
+    # Publication initiale dans DataGalaxy
+    datagalaxy_relational_object = {
+        "name": 'relational_object',
+        "status": 'Proposed',
+        "owners": [
+            "khadidia.sy@external.totalenergies.com"
+        ],
+        "stewards": [
+            "khadidia.sy@external.totalenergies.com"
+        ],
+        "tags": [
+
+        ],
+        "description": 'tdf demo pipeline 2',
+        "summary": 'Ingestion in datagalaxy of a relational object',
+        "upsert": True,
+        "type": 'Relational',
+        "technicalName": 'relational_object'
+    }
+
+    datagalaxy_nosql_object = {
+        "name": 'nosql_object',
+        "status": 'Proposed',
+        "owners": [
+            "khadidia.sy@external.totalenergies.com"
+        ],
+        "stewards": [
+            "khadidia.sy@external.totalenergies.com"
+        ],
+        "tags": [
+
+        ],
+        "description": 'Tdf demo pipeline 2',
+        "summary": 'Ingestion in datagalaxy of a nosql object',
+        "upsert": True,
+        "type": 'NoSql',
+        "technicalName": 'nosql_object'
+    }
+
+    structure_name = 'demo_table'
+    field_name = 'test_field'
+
+    # Création des 2 objets
+    #relational_datagalaxy_response_post = ingest_dataset_in_datagalaxy(datagalaxy_relational_object, version_id)
+    #relational_dataset_id = relational_datagalaxy_response_post['id']
+    #print(relational_dataset_id)
+    structure = repository.add_structure(structure_name, relational_dataset_id, version_id)
+
+    #ingest_dataset_in_datagalaxy(datagalaxy_nosql_object, version_id)
+
+
+    print("Waiting confirmation to update field")
+    #raw_input()
+    print("Update confirmed: adding " + field_name)
+
+    # Mise à jour de la table déclarée avec un nouveau champ à déclarer
+    structure_id = '54bdf09d-e995-4fb1-9ae9-b67e394d104c:88c6de70-16b9-4621-8c65-b414e9a3735f' # structure['id']
+    # structure_id = structure['id']
+    field = repository.add_field_to_structure(field_name, structure_id, version_id)
+    print(field)
+
+    if field:
+        print('-------------------------------')
+        print('-------------------------------')
+        print(field)
+        print('-------------------------------')
+        print('-------------------------------')
+        print("Update to datagalaxy successful")
+        print('-------------------------------')
+        print('-------------------------------')
+
+
+construct_temporal_trace_refined_table_from_rousset_fdc_data()

@@ -7,7 +7,7 @@
 
 Le dossier datahub comporte toutes les images nécessaires pour déployer datahub en local ( on peut se baser sur le readme du dossier ), ainsi que toutes les fonctions qu'on utilise pour construire les sondes (qui sont plutôt dans le sous-dossier metadata-ingestion). Pour utiliser ces fonctions il faudra installer les librairies du setup.py du dossier metadata_ingestion.
 
-Pour déployer datahub en local, il suffit de se placer dans le dossier datahub et lancer la commande ./quickstart.sh depuis le terminal.
+Pour déployer datahub en local, il suffit de se placer dans le dossier datahub/docker/ et lancer la commande ./quickstart.sh depuis le terminal.
 
 La documentation officielle de Datahub est disponible ici: https://datahubproject.io/docs/
 

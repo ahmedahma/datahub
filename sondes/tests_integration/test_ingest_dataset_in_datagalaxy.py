@@ -8,10 +8,10 @@ def test_ingest_dataset_in_datagalaxy_ingests_dataset_successfully_in_datagalaxy
         "name": 'test3',
         "status": 'Proposed',
         "owners": [
-            "khadidia.sy@external.total.com"
+            "khadidia.sy@external.totalenergies.com"
         ],
         "stewards": [
-            "khadidia.sy@external.total.com"
+            "khadidia.sy@external.totalenergies.com"
         ],
         "tags": [
 
@@ -30,7 +30,10 @@ def test_ingest_dataset_in_datagalaxy_ingests_dataset_successfully_in_datagalaxy
     datagalaxy_response_post = ingest_dataset_in_datagalaxy(dataset_object, version_id)
     dataset_id = datagalaxy_response_post['id']
     posted_datagalaxy_dataset = repository.get_by_id(dataset_id, version_id)
+    print(posted_datagalaxy_dataset)
 
     # Then
     assert posted_datagalaxy_dataset['name'] == dataset_object['name']
     assert posted_datagalaxy_dataset['attributes']['owners'] == dataset_object['owners']
+
+test_ingest_dataset_in_datagalaxy_ingests_dataset_successfully_in_datagalaxy()
