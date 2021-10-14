@@ -1933,6 +1933,15 @@
                         "default": null
                       },
                       {
+                        "name": "name",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Name of the MLModel experiment",
+                        "default": null
+                      },
+                      {
                         "name": "type",
                         "type": [
                           "null",
@@ -1957,6 +1966,24 @@
                           }
                         ],
                         "doc": "Hyper Parameters of the MLModel",
+                        "default": null
+                      },
+                      {
+                        "name": "metrics",
+                        "type": [
+                          "null",
+                          {
+                            "type": "map",
+                            "values": [
+                              "string",
+                              "int",
+                              "float",
+                              "double",
+                              "boolean"
+                            ]
+                          }
+                        ],
+                        "doc": "Metrics of the MLModel",
                         "default": null
                       },
                       {

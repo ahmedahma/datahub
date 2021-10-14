@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 
 import mlflow
+from datahub.metadata import MLModelPropertiesClass
 from mlflow.entities import Experiment
 
 from datahub.ingestion.api.common import PipelineContext
@@ -42,19 +43,19 @@ class MlFlowSourceTest(unittest.TestCase):
         assert mlflow_objects == ['first_experiment', 'second_experiment']
 
     @patch("datahub.ingestion.source.mlflow.MlFlowSource.get_mlflow_objects")
-    def test_mlflow_source_creates_correct_workunits(self, mocked_mlflo_objects):
+    def test_mlflow_source_creates_correct_workunits(self, mocked_mlflow_objects):
         # Given:
         config = {
             'tracking_uri': 'localhost:5000'
         }
 
-        experiments_name = ['Default', 'first_experiment', 'second_experiment']
+        experiments_name = [MLModelPropertiesClass(name='first_model'), MLModelPropertiesClass(name='second_model')]
 
         # When
         ctx = PipelineContext(run_id="test")
         mlflow_source = MlFlowSource.create(config, ctx)
 
-        mocked_mlflo_objects.return_value = experiments_name
+        mocked_mlflow_objects.return_value = experiments_name
 
         workunits = []
         for w in mlflow_source.get_workunits():
@@ -65,8 +66,8 @@ class MlFlowSourceTest(unittest.TestCase):
 
         first_workunit = workunits[0]
         assert first_workunit.__dict__['mce']['proposedSnapshot'][
-                   'urn'] == f'urn:li:mlModel:(urn:li:dataPlatform:mlflow,{experiments_name[1]},PROD)'
+                   'urn'] == f'urn:li:mlModel:(urn:li:dataPlatform:mlflow,first_model,PROD)'
 
         second_workunit = workunits[1]
         assert second_workunit.__dict__['mce']['proposedSnapshot'][
-                   'urn'] == f'urn:li:mlModel:(urn:li:dataPlatform:mlflow,{experiments_name[2]},PROD)'
+                   'urn'] == f'urn:li:mlModel:(urn:li:dataPlatform:mlflow,second_model,PROD)'

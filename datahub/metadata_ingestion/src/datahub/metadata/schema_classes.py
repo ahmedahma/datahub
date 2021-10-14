@@ -3620,12 +3620,14 @@ class MLModelPropertiesClass(DictWrapper):
     
     @overload
     def __init__(self,
+        name: str,
         tags: List[str],
         description: Union[None, str]=None,
         date: Union[None, int]=None,
         version: Union[None, "VersionTagClass"]=None,
         type: Union[None, str]=None,
         hyperParameters: Union[None, Dict[str, Union[str, int, float, float, bool]]]=None,
+        metrics: Union[None, Dict[str, Union[str, int, float, float, bool]]]=None,
         mlFeatures: Union[None, List[str]]=None,
     ):
         ...
@@ -3636,12 +3638,14 @@ class MLModelPropertiesClass(DictWrapper):
     
     def __init__(self, _inner_dict=None, **kwargs):
         super(MLModelPropertiesClass, self).__init__({})
+        self.name = self.RECORD_SCHEMA.field_map["name"].default
         self.description = self.RECORD_SCHEMA.field_map["description"].default
         self.date = self.RECORD_SCHEMA.field_map["date"].default
         self.version = self.RECORD_SCHEMA.field_map["version"].default
         self.type = self.RECORD_SCHEMA.field_map["type"].default
         self.hyperParameters = self.RECORD_SCHEMA.field_map["hyperParameters"].default
         self.mlFeatures = self.RECORD_SCHEMA.field_map["mlFeatures"].default
+        self.metrics = self.RECORD_SCHEMA.field_map["metrics"].default
         self.tags = list()
         if _inner_dict is not None:
             for key, value in _inner_dict.items():
