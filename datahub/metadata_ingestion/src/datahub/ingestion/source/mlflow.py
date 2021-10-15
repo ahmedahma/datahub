@@ -49,17 +49,20 @@ class MlFlowSource(Source):
         experiments = self.get_mlflow_objects(self.mlflow_client)
 
         for experiment in experiments:
-            mce = MetadataChangeEvent()
-            mlmodel_snapshot = MLModelSnapshot()
-            mlmodel_snapshot.urn = f"urn:li:mlModel:(urn:li:dataPlatform:{platform},{experiment.name},{env})"
+            if self.config.experiment_pattern.allowed(experiment.name):
+                mce = MetadataChangeEvent()
+                mlmodel_snapshot = MLModelSnapshot()
+                mlmodel_snapshot.urn = f"urn:li:mlModel:(urn:li:dataPlatform:{platform},{experiment.name},{env})"
 
-            mlmodel_snapshot.aspects.append(experiment)
+                mlmodel_snapshot.aspects.append(experiment)
 
-            mce.proposedSnapshot = mlmodel_snapshot
+                mce.proposedSnapshot = mlmodel_snapshot
 
-            wu = MetadataWorkUnit(id=experiment.name, mce=mce)
-            self.report.report_workunit(wu)
-            yield wu
+                wu = MetadataWorkUnit(id=experiment.name, mce=mce)
+                self.report.report_workunit(wu)
+                yield wu
+            else:
+                self.report.report_dropped(experiment.name)
 
     def get_mlflow_objects(self, mlflow_client: mlflow.tracking.MlflowClient) -> List[MLModelPropertiesClass]:
         experiment_list = mlflow_client.list_experiments(view_type=ViewType.ACTIVE_ONLY)

@@ -8,20 +8,14 @@ from datahub.ingestion.run.pipeline import Pipeline
 from test_helpers.mce_helpers import load_json_file, assert_mces_equal
 
 
-def delete_mlflow_experiments(tracking_uri: str, experiments_to_delete: List[str]):
-    mlflow_client = mlflow.tracking.MlflowClient(tracking_uri)
-    for experiment in experiments_to_delete:
-        mlflow_client.delete_experiment(experiment)
-    shutil.rmtree(f'./{tracking_uri}/.trash')
-
-
 class MlFlowTest(unittest.TestCase):
     def test_mlflow_ingests_multiple_mlflow_experiments_successfully(self):
         # Given:
-        tracking_uri = 'localhost:5000'
+        tracking_uri = 'http://localhost:5000'
         mlflow_client = mlflow.tracking.MlflowClient(tracking_uri)
-        first_experiment_id = mlflow_client.create_experiment(name='first_experiment')
-        second_experiment_id = mlflow_client.create_experiment(name='second_experiment')
+        first_experiment_id = mlflow_client.create_experiment(name='test')
+        mlflow_client.create_run(first_experiment_id)
+        mlflow.log_metric("mae", 123)
 
         golden_mce = load_json_file(filename="./mlflow_golden_mce.json")
 
@@ -29,7 +23,11 @@ class MlFlowTest(unittest.TestCase):
             "source": {
                 "type": "mlflow",
                 "config": {
-                    "tracking_uri": "localhost:5000"
+                    "tracking_uri": tracking_uri,
+                    "experiment_pattern": {
+                        "deny": ['*'],
+                        "allow": ['test']
+                    }
                 },
             },
             "sink": {
@@ -48,7 +46,8 @@ class MlFlowTest(unittest.TestCase):
         status = pipeline.pretty_print_summary()
         output_mce = load_json_file(filename="./mlflow_mce.json")
 
-        delete_mlflow_experiments(tracking_uri, [first_experiment_id, second_experiment_id])
+        mlflow_client.delete_experiment(first_experiment_id)
+        mlflow_client.delete_experiment(second_experiment_id)
 
         # Then
         assert status == 0
