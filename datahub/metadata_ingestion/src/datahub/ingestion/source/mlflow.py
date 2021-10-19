@@ -8,7 +8,6 @@ from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.source.metadata_common import MetadataWorkUnit
 from datahub.metadata import MLModelPropertiesClass
-from datahub.metadata.com.linkedin.pegasus2avro.common import VersionTag
 from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import MLModelSnapshot
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 from mlflow.entities import ViewType
@@ -47,7 +46,6 @@ class MlFlowSource(Source):
         platform = 'mlflow'
         env = 'PROD'
         experiments = self.get_mlflow_objects(self.mlflow_client)
-
         for experiment in experiments:
             if self.config.experiment_pattern.allowed(experiment.name):
                 mce = MetadataChangeEvent()
@@ -68,13 +66,12 @@ class MlFlowSource(Source):
         experiment_list = mlflow_client.list_experiments(view_type=ViewType.ACTIVE_ONLY)
         experiments_ids_list = list(map(lambda x: x.experiment_id, iter(experiment_list)))
         runs_of_experiment = mlflow_client.search_runs(experiments_ids_list)
-        experiments_metadata = []
 
+        experiments_metadata = []
         for run in runs_of_experiment:
             experiments_metadata.append(MLModelPropertiesClass(
-                name=run.data.tags['mlflow.source.name'],
+                name=run.info.run_id,
                 date=run.info.end_time,
-                version=VersionTag({'versionTag': run.info.run_id}),
                 hyperParameters=run.data.params,
                 metrics=run.data.metrics
             ))

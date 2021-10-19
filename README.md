@@ -74,6 +74,8 @@ Pour illustrer cette ingestion en pull, on peut monter un server mlflow ( géné
 - Pour exploiter ce connecteur on a créé un exemple de cron qui tourne chaque jour pour récupérer les métadonnées générées par MlFlow et les ingérer sur Datahub. L'exemple est disponible dans le fichier cron/mlflow_pull_ingestion. On pourra configurer ce cron selon notre besoin d'ingestion.
 
 
+Pour lancer le serveur mlflow : `mlflow server --backend-store-uri sample_pipeline/sample_pipeline/usecase/mlruns`
+
 ### Déploiement
 
 
