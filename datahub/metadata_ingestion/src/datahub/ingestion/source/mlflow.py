@@ -8,6 +8,7 @@ from datahub.ingestion.api.common import PipelineContext
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.source.metadata_common import MetadataWorkUnit
 from datahub.metadata import MLModelPropertiesClass
+from datahub.metadata.com.linkedin.pegasus2avro.common import VersionTag
 from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import MLModelSnapshot
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 from mlflow.entities import ViewType
@@ -45,18 +46,19 @@ class MlFlowSource(Source):
     def get_workunits(self) -> Iterable[MetadataWorkUnit]:
         platform = 'mlflow'
         env = 'PROD'
-        experiments = self.get_mlflow_objects(self.mlflow_client)
+        experiments: List[MLModelPropertiesClass] = self.get_mlflow_objects(self.mlflow_client)
         for experiment in experiments:
             if self.config.experiment_pattern.allowed(experiment.name):
                 mce = MetadataChangeEvent()
                 mlmodel_snapshot = MLModelSnapshot()
-                mlmodel_snapshot.urn = f"urn:li:mlModel:(urn:li:dataPlatform:{platform},{experiment.name},{env})"
+                mlmodel_snapshot.urn = f"urn:li:mlModel:(urn:li:dataPlatform:{platform},{experiment.name}_" \
+                    f"{experiment.version.versionTag},{env})"
 
                 mlmodel_snapshot.aspects.append(experiment)
 
                 mce.proposedSnapshot = mlmodel_snapshot
 
-                wu = MetadataWorkUnit(id=experiment.name, mce=mce)
+                wu = MetadataWorkUnit(id=f"{experiment.name}_{experiment.version.versionTag}", mce=mce)
                 self.report.report_workunit(wu)
                 yield wu
             else:
@@ -64,17 +66,20 @@ class MlFlowSource(Source):
 
     def get_mlflow_objects(self, mlflow_client: mlflow.tracking.MlflowClient) -> List[MLModelPropertiesClass]:
         experiment_list = mlflow_client.list_experiments(view_type=ViewType.ACTIVE_ONLY)
-        experiments_ids_list = list(map(lambda x: x.experiment_id, iter(experiment_list)))
-        runs_of_experiment = mlflow_client.search_runs(experiments_ids_list)
+        print(experiment_list)
 
+        experiments_ids_list = list(map(lambda x: {'id': x.experiment_id, 'name': x.name}, iter(experiment_list)))
         experiments_metadata = []
-        for run in runs_of_experiment:
-            experiments_metadata.append(MLModelPropertiesClass(
-                name=run.info.run_id,
-                date=run.info.end_time,
-                hyperParameters=run.data.params,
-                metrics=run.data.metrics
-            ))
+        for experiment in experiments_ids_list:
+            runs = mlflow_client.search_runs(experiment['id'])
+            for run in runs:
+                experiments_metadata.append(MLModelPropertiesClass(
+                    name=experiment['name'],
+                    date=run.info.end_time,
+                    hyperParameters=run.data.params,
+                    version=VersionTag(versionTag=run.info.run_id),
+                    metrics=run.data.metrics
+                ))
 
         return experiments_metadata
 

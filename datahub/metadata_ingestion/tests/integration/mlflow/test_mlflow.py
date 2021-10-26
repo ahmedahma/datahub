@@ -1,11 +1,9 @@
-import shutil
 import unittest
-from typing import List
 
-import pickle
 import mlflow
 import numpy as np
 import pandas as pd
+import pytest
 from datahub.ingestion.run.pipeline import Pipeline
 from sklearn import datasets
 from sklearn.dummy import DummyRegressor
@@ -13,16 +11,23 @@ from sklearn.model_selection import train_test_split
 
 from test_helpers.mce_helpers import load_json_file, assert_mces_equal
 
+TRACKING_URI = 'http://localhost:5000'
+
+
+@pytest.fixture
+def setup_mlflow_client():
+    mlflow_client = mlflow.tracking.MlflowClient(TRACKING_URI)
+    name = 'heyyyyy'
+    first_experiment_id = mlflow_client.create_experiment(name=name)
+    mlflow.set_experiment(name)
+    yield mlflow_client, first_experiment_id
+    mlflow_client.delete_experiment(first_experiment_id)
+
 
 class MlFlowTest(unittest.TestCase):
-    def test_mlflow_ingests_multiple_mlflow_experiments_successfully(self):
-        # Given:
-        tracking_uri = 'http://localhost:5000'
-        mlflow_client = mlflow.tracking.MlflowClient(tracking_uri)
-        name = 'heyyyyy'
-        first_experiment_id = mlflow_client.create_experiment(name=name)
-        mlflow.set_experiment(name)
+    def test_mlflow_ingests_multiple_mlflow_experiments_successfully(self, setup_mlflow_client):
 
+        mlflow_client, first_experiment_id = setup_mlflow_client()
         mlflow_client.create_run(first_experiment_id)
         model = DummyRegressor()
 
@@ -53,7 +58,7 @@ class MlFlowTest(unittest.TestCase):
             "source": {
                 "type": "mlflow",
                 "config": {
-                    "tracking_uri": tracking_uri,
+                    "tracking_uri": TRACKING_URI,
                 },
             },
             "sink": {
@@ -72,8 +77,5 @@ class MlFlowTest(unittest.TestCase):
         status = pipeline.pretty_print_summary()
         output_mce = load_json_file(filename="./mlflow_mce.json")
 
-        mlflow_client.delete_experiment(first_experiment_id)
-
-        # Then
         assert status == 0
         assert_mces_equal(output_mce, golden_mce)

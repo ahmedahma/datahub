@@ -1,7 +1,7 @@
 source:
   type: mlflow
   config:
-    tracking_uri: 'localhost:5000'
+    tracking_uri: 'http://localhost:5000'
 
 sink:
   type: "datahub-rest"
